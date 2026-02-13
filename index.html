@@ -7,15 +7,11 @@
 
   <style>
     :root{
-      --pink1:#ffb3d1;
-      --pink2:#ff6fae;
-      --pink3:#ff3b8d;
-
+      --pink1:#ffb3d1; --pink2:#ff6fae; --pink3:#ff3b8d;
       --text:#140a12;
       --padTop: max(16px, env(safe-area-inset-top));
       --padBot: max(16px, env(safe-area-inset-bottom));
       --padLR: 14px;
-
       --softShadow: 0 14px 30px rgba(0,0,0,.14);
       --shadow: 0 18px 55px rgba(0,0,0,.18);
     }
@@ -40,11 +36,30 @@
       overflow:hidden;
     }
 
-    /* hearts */
+    /* soft blobs */
+    .blob{
+      position:fixed;
+      width: 560px; height: 560px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.30), transparent 62%);
+      filter: blur(12px);
+      opacity:.65;
+      z-index:0;
+      pointer-events:none;
+      animation: blobMove 10s ease-in-out infinite alternate;
+    }
+    .blob.b1{ left:-220px; top:-260px; }
+    .blob.b2{ right:-240px; bottom:-260px; animation-duration: 12s; }
+    @keyframes blobMove{
+      from{ transform: translate(0,0) scale(1); }
+      to{ transform: translate(70px, 40px) scale(1.10); }
+    }
+
+    /* hearts above all */
     .hearts{
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.65;
+      opacity:.62;
       z-index: 99998;
       filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
     }
@@ -62,46 +77,25 @@
       100%{ transform: translateY(-25svh) translateX(90px) rotate(360deg); opacity:0; }
     }
 
-    .blob{
-      position:fixed;
-      width: 560px; height: 560px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.32), transparent 62%);
-      filter: blur(12px);
-      opacity:.65;
-      z-index:0;
-      pointer-events:none;
-      animation: blobMove 10s ease-in-out infinite alternate;
-    }
-    .blob.b1{ left:-220px; top:-260px; }
-    .blob.b2{ right:-240px; bottom:-260px; animation-duration: 12s; }
-    @keyframes blobMove{
-      from{ transform: translate(0,0) scale(1); }
-      to{ transform: translate(70px, 40px) scale(1.10); }
-    }
-
-    /* card transparent */
+    /* transparent wrapper */
     .card{
-      width: min(820px, 94vw);
+      width: min(720px, 94vw);
       background: transparent;
-      border: none;
+      border: 0;
       box-shadow: none;
-      padding: clamp(12px, 3vw, 22px);
       position:relative;
       z-index:1;
     }
 
-    /* frosted background behind text only */
+    /* frosted text area only */
     .frost{
-      position:relative;
-      z-index:1;
+      display:inline-block;
       padding: 12px 14px;
       border-radius: 18px;
       background: rgba(255,255,255,.14);
       border: 1px solid rgba(255,255,255,.22);
       backdrop-filter: blur(14px);
       box-shadow: var(--softShadow);
-      display:inline-block;
     }
 
     /* question floats */
@@ -118,62 +112,51 @@
       100% { transform: translateX(0) translateY(0) rotate(-0.10deg); }
     }
 
-    h1{
-      margin: 4px 0 8px;
-      font-size: clamp(22px, 5.6vw, 36px);
-      line-height:1.15;
-    }
-    .sub{
-      margin: 0;
-      font-size: clamp(13px, 3.5vw, 16px);
-      color: rgba(20,10,18,.80);
-      font-weight: 650;
+    h1{ margin: 4px 0 8px; font-size: clamp(22px, 5.6vw, 34px); line-height:1.15; }
+    .sub{ margin:0; font-size: clamp(13px, 3.5vw, 16px); color: rgba(20,10,18,.82); font-weight:650; }
+
+    /* NOTE (editable) */
+    .note{
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.10);
+      border: 1px dashed rgba(255,255,255,.28);
+      color: rgba(20,10,18,.82);
+      font-weight: 750;
+      box-shadow: 0 12px 24px rgba(0,0,0,.10);
+      backdrop-filter: blur(10px);
     }
 
-    /* MASONRY-ish photos grid (5 photos) */
+    /* photos: stable 2x2 for iPhone */
     .photos{
-      margin: 14px auto 14px;
-      width: min(820px, 94vw);
+      width: min(720px, 94vw);
+      margin: 14px auto 12px;
       display:grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: 170px;
-      position:relative;
-      z-index:1;
     }
-
-    .tile{
+    .photo{
       border-radius: 16px;
       overflow:hidden;
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.20);
       box-shadow: 0 16px 32px rgba(0,0,0,.14);
       backdrop-filter: blur(8px);
-      position:relative;
       will-change: transform;
-      animation: drift 6.2s ease-in-out infinite;
+      animation: drift 6.4s ease-in-out infinite;
     }
-    .tile img{
+    .photo:nth-child(2){ animation-duration: 7.1s; animation-delay: .25s; }
+    .photo:nth-child(3){ animation-duration: 7.7s; animation-delay: .5s; }
+    .photo:nth-child(4){ animation-duration: 8.2s; animation-delay: .15s; }
+
+    .photo img{
       width:100%;
-      height:100%;
+      aspect-ratio: 4 / 3;
       object-fit: cover;
       display:block;
-      transform: scale(1.02);
+      transform: scale(1.01);
     }
-
-    /* layout */
-    .t1{ grid-column: 1 / 2; grid-row: 1 / 3; } /* tall hero */
-    .t2{ grid-column: 2 / 4; grid-row: 1 / 2; } /* wide */
-    .t3{ grid-column: 2 / 3; grid-row: 2 / 3; }
-    .t4{ grid-column: 3 / 4; grid-row: 2 / 4; } /* tall */
-    .t5{ grid-column: 1 / 3; grid-row: 3 / 4; } /* wide */
-
-    /* each drifts differently */
-    .t1{ animation-duration: 6.8s; animation-delay: .1s; }
-    .t2{ animation-duration: 7.4s; animation-delay: .4s; }
-    .t3{ animation-duration: 6.2s; animation-delay: .7s; }
-    .t4{ animation-duration: 7.9s; animation-delay: .2s; }
-    .t5{ animation-duration: 6.9s; animation-delay: .55s; }
 
     @keyframes drift{
       0%   { transform: translateX(0) translateY(0) rotate(-0.12deg); }
@@ -183,28 +166,16 @@
       100% { transform: translateX(0) translateY(0) rotate(-0.12deg); }
     }
 
-    @media (max-width: 720px){
-      .photos{
-        grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 160px;
-      }
-      .t1{ grid-column: 1 / 3; grid-row: 1 / 3; }
-      .t2{ grid-column: 1 / 3; grid-row: 3 / 4; }
-      .t3{ grid-column: 1 / 2; grid-row: 4 / 5; }
-      .t4{ grid-column: 2 / 3; grid-row: 4 / 6; }
-      .t5{ grid-column: 1 / 2; grid-row: 5 / 6; }
-    }
-
+    /* buttons */
     #arena{
-      margin-top: 10px;
+      margin-top: 12px;
       display:flex;
       align-items:center;
       justify-content:center;
       gap: 14px;
-      z-index: 2;
       position:relative;
+      z-index:2;
     }
-
     button{
       border:none;
       border-radius: 999px;
@@ -217,21 +188,16 @@
       -webkit-tap-highlight-color: transparent;
       min-width: 136px;
       min-height: 46px;
-      transition: transform .12s ease, filter .12s ease;
-      position:relative;
-      z-index:1;
+      transition: transform .12s ease;
       touch-action: manipulation;
     }
     button:active{ transform: scale(.98); }
 
-    #yes{
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color:white;
-    }
+    #yes{ background: linear-gradient(135deg, #22c55e, #16a34a); color:#fff; }
 
     #no{
       background: linear-gradient(135deg, #ff355d, #e11d48);
-      color:white;
+      color:#fff;
       position:fixed;
       z-index: 99999;
       left: 70%;
@@ -241,55 +207,7 @@
       will-change: left, top, transform;
     }
 
-    /* overlay */
-    .overlay{
-      position:absolute;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      z-index: 5;
-      background: radial-gradient(800px 500px at 30% 20%, rgba(255,255,255,.30), rgba(255,255,255,.10) 55%, rgba(255,255,255,.04));
-      backdrop-filter: blur(10px);
-    }
-    .overlay.on{ display:flex; }
-
-    .panel{
-      width:min(560px, 92%);
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.25);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      padding: 16px 16px 14px;
-    }
-
-    .panel h2{
-      margin: 4px 0 8px;
-      font-size: clamp(20px, 5vw, 28px);
-      color: rgba(20,10,18,.92);
-    }
-    .panel p{
-      margin: 0 0 12px;
-      color: rgba(20,10,18,.72);
-      font-weight: 700;
-    }
-    .panel .row{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    .panel .ghost{
-      background: rgba(255,255,255,.20);
-      border: 1px solid rgba(255,255,255,.28);
-      color:#140a12;
-      box-shadow: 0 12px 22px rgba(0,0,0,.12);
-    }
-
-    /* music toggle */
+    /* music button */
     #musicBtn{
       position:fixed;
       right: 12px;
@@ -306,7 +224,7 @@
       font-weight: 900;
     }
 
-    /* ✨ smaczek: sparkles */
+    /* smaczek: sparkles */
     .spark{
       position:fixed;
       z-index: 100000;
@@ -327,51 +245,40 @@
 <body>
   <div class="blob b1"></div>
   <div class="blob b2"></div>
-
   <div class="hearts" id="hearts"></div>
 
   <div class="card">
     <div class="frost floatWrap">
       <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
       <p class="sub">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
+
+      <!-- XXXXX: tutaj wpisz swoją wiadomość -->
+      <div class="note">XXXXX</div>
     </div>
 
     <div class="photos">
-      <div class="tile t1"><img src="images/1.jpg" alt="photo 1"></div>
-      <div class="tile t2"><img src="images/2.jpg" alt="photo 2"></div>
-      <div class="tile t3"><img src="images/3.jpg" alt="photo 3"></div>
-      <div class="tile t4"><img src="images/4.jpg" alt="photo 4"></div>
-      <div class="tile t5"><img src="images/5.jpg" alt="photo 5"></div>
+      <div class="photo"><img src="images/1.jpg.JPEG" alt="photo 1"></div>
+      <div class="photo"><img src="images/2.jpg.JPEG" alt="photo 2"></div>
+      <div class="photo"><img src="images/3.jpg.JPEG" alt="photo 3"></div>
+      <div class="photo"><img src="images/4.jpg.JPEG" alt="photo 4"></div>
     </div>
 
     <div id="arena">
       <button id="yes">TAK 💖</button>
     </div>
-
-    <div class="overlay" id="overlay">
-      <div class="panel">
-        <h2 id="overlayTitle">💘</h2>
-        <p id="overlayText"></p>
-        <div class="row">
-          <button id="sendAgain">Wyślij jeszcze raz 📩</button>
-          <button class="ghost" id="closeOverlay">Zamknij ✨</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <button id="no">NIE 😈</button>
 
-  <!-- muzyka -->
+  <!-- muzyka (plik w ROOT repo) -->
   <audio id="bgm" preload="auto" loop playsinline>
-    <source src="MORAD%20-%20LAMINE.mp3" type="audio/mpeg">
+    <source src="MORAD%20-%20LAMINE%20(mp3cut.net).mp3" type="audio/mpeg">
   </audio>
-  <button id="musicBtn" aria-label="Muzyka">🔊 Muzyka</button>
+  <button id="musicBtn">🔊 Muzyka</button>
 
   <script>
     // ====== settings ======
     const MY_PHONE_E164 = "+48690980775";
-    const KEY = "valentine_answer_v14";
     const needed = 10;
 
     const NO_LINES = [
@@ -382,9 +289,9 @@
       "poważnie?",
       "kocham cię.",
       "OK, negocjacje: Ty TAK, ja deser. Deal? 🍰",
-      "Zgubiłem argumenty… zostało mi tylko: *pls* 😭",
+      "Zgubiłem argumenty… zostało mi tylko: pls 😭",
       "Ostatnie 3% baterii i 97% uczuć 🥺",
-      "Dobra, to już nie NIE, to po prostu ‘BOJĘ SIĘ SZCZĘŚCIA’ 😈"
+      "Dobra, to już nie NIE, tylko ‘BOJĘ SIĘ SZCZĘŚCIA’ 😈"
     ];
 
     const $ = (id) => document.getElementById(id);
@@ -395,9 +302,8 @@
       const safe = raw.replace(/[<>]/g, "").slice(0, 24);
       return safe || "Wiktoria";
     }
-    function nowStamp(){ return new Date().toLocaleString("pl-PL"); }
 
-    // ====== sparkles (smaczek) ======
+    // ====== sparkles ======
     function sparkleAt(x, y){
       const chars = ["✨","💖","💘","🌟","💞"];
       const s = document.createElement("div");
@@ -406,12 +312,11 @@
       s.style.left = x + "px";
       s.style.top  = y + "px";
       s.style.fontSize = (16 + Math.random()*10) + "px";
-      s.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*40-20).toFixed(1)}deg)`;
       document.body.appendChild(s);
       setTimeout(()=>s.remove(), 800);
     }
 
-    // ====== pop sound (web audio) ======
+    // ====== small click sound ======
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
     function ensureAudio(){
@@ -422,23 +327,19 @@
         return audioCtx;
       }catch(e){ return null; }
     }
-    function popUpUp(){
+    function pop(){
       const ctx = ensureAudio();
       if(!ctx) return;
-      const times = [0.00, 0.07, 0.14];
-      const freqs = [420, 560, 740];
-      times.forEach((dt, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = "triangle";
-        o.frequency.setValueAtTime(freqs[i], ctx.currentTime + dt);
-        g.gain.setValueAtTime(0.0001, ctx.currentTime + dt);
-        g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + dt + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dt + 0.06);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(ctx.currentTime + dt);
-        o.stop(ctx.currentTime + dt + 0.065);
-      });
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "triangle";
+      o.frequency.value = 520;
+      g.gain.value = 0.0001;
+      g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.09);
     }
 
     // ====== music ======
@@ -464,7 +365,12 @@
       musicBtn.textContent = "🔊 Muzyka";
     }
     musicBtn.addEventListener("click", () => musicOn ? stopMusic() : startMusic());
+
+    // try autoplay (may be blocked on iPhone; button remains)
     setTimeout(()=>startMusic(), 250);
+
+    // ====== title ======
+    $("title").textContent = `💘 Czy zostaniesz moją Walentynką ${getNameFromUrl()}? 💘`;
 
     // ====== hearts ======
     const heartsBox = $("hearts");
@@ -486,39 +392,21 @@
     for(let i=0;i<18;i++) spawnHeart();
     setInterval(spawnHeart, 420);
 
-    // ====== elements ======
-    const name = getNameFromUrl();
-    $("title").textContent = `💘 Czy zostaniesz moją Walentynką ${name}? 💘`;
-
-    const yes = $("yes");
-    const no = $("no");
-    const overlay = $("overlay");
-    const overlayTitle = $("overlayTitle");
-    const overlayText = $("overlayText");
-    const sendAgain = $("sendAgain");
-    const closeOverlay = $("closeOverlay");
-
-    // ====== storage ======
-    function setLocalAnswer(ans){
-      localStorage.setItem(KEY, JSON.stringify({ answer: ans, time: new Date().toISOString(), name }));
-    }
-    function getLocalAnswer(){
-      try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; }
-    }
-
     // ====== sms ======
     function isIOS(){
       return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     }
     function openMessageApp(ans){
-      const text = `Odpowiedź: ${ans} 💘 (czas: ${nowStamp()})`;
+      const stamp = new Date().toLocaleString("pl-PL");
+      const text = `Odpowiedź: ${ans} 💘 (czas: ${stamp})`;
       const body = encodeURIComponent(text);
       const sep = isIOS() ? "&" : "?";
-      const url = `sms:${MY_PHONE_E164}${sep}body=${body}`;
-      setTimeout(() => { window.location.href = url; }, 60);
+      location.href = `sms:${MY_PHONE_E164}${sep}body=${body}`;
     }
 
-    // ====== NO movement (escapes only after press) ======
+    // ====== NO logic ======
+    const yes = $("yes");
+    const no = $("no");
     let noClicks = 0;
 
     function intersects(ax, ay, aw, ah, bx, by, bw, bh){
@@ -526,21 +414,21 @@
     }
     function getSafeBounds(){
       const safe = 12;
-      const padTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--padTop")) || 16;
-      const padBot = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--padBot")) || 16;
+      const padTop = 16;
+      const padBot = 16;
       return {
         left: safe,
-        right: window.innerWidth - safe,
+        right: innerWidth - safe,
         top: padTop + safe,
-        bottom: window.innerHeight - padBot - safe
+        bottom: innerHeight - padBot - safe
       };
     }
     function moveNoAvoidYes(){
       const bounds = getSafeBounds();
       const btn = no.getBoundingClientRect();
       const yesRect = yes.getBoundingClientRect();
-
       const safeGap = 42;
+
       const maxX = Math.max(1, bounds.right - bounds.left - btn.width);
       const maxY = Math.max(1, bounds.bottom - bounds.top - btn.height);
 
@@ -549,7 +437,7 @@
         x = bounds.left + Math.random() * maxX;
         y = bounds.top + Math.random() * maxY;
         tries++;
-        if(tries > 240) break;
+        if(tries > 220) break;
       } while(
         intersects(
           x, y, btn.width, btn.height,
@@ -569,11 +457,9 @@
       no.textContent = `${phrase} 😈 (${left})`;
     }
 
-    // start
-    no.textContent = "NIE 😈";
     moveNoAvoidYes();
 
-    // anti-double-fire
+    // anti double fire on iOS
     let lastFire = 0;
     function fireOnce(fn){
       const now = Date.now();
@@ -582,21 +468,12 @@
       fn();
     }
 
-    function showOverlay(ans){
-      overlayTitle.textContent = ans === "TAK 💖" ? "YAY! 💘" : "Okej 😈";
-      overlayText.textContent = ans === "TAK 💖"
-        ? `To ustalone, ${name} — Walentynki są nasze 😄`
-        : `Odpowiedź zapisana: ${ans}`;
-      overlay.classList.add("on");
-    }
-
     function handleNo(e){
       fireOnce(async () => {
-        const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (window.innerWidth/2);
-        const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (window.innerHeight/2);
+        const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
+        const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
         sparkleAt(x, y);
-
-        ensureAudio(); popUpUp();
+        pop();
         if(!musicOn) { try { await startMusic(); } catch(_){} }
 
         noClicks++;
@@ -604,52 +481,34 @@
           setNoLabel(noClicks);
           moveNoAvoidYes();
         } else {
-          const ans = "NIE 😈";
-          setLocalAnswer(ans);
           no.style.display = "none";
-          openMessageApp(ans);
-          showOverlay(ans);
+          openMessageApp("NIE 😈");
         }
       });
     }
 
-    // bind multiple events
     no.addEventListener("pointerdown", (e)=>{ e.preventDefault(); e.stopPropagation(); handleNo(e); }, {passive:false});
     no.addEventListener("touchend", (e)=>{ e.preventDefault(); e.stopPropagation(); handleNo(e); }, {passive:false});
     no.addEventListener("click", (e)=>{ e.preventDefault(); e.stopPropagation(); handleNo(e); });
 
     function handleYes(e){
       fireOnce(async () => {
-        const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (window.innerWidth/2);
-        const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (window.innerHeight/2);
-        // trochę więcej iskier na TAK
+        const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
+        const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
         for(let i=0;i<5;i++){
-          setTimeout(()=>sparkleAt(x + (Math.random()*60-30), y + (Math.random()*40-20)), i*40);
+          setTimeout(()=>sparkleAt(x + (Math.random()*60-30), y + (Math.random()*40-20)), i*45);
         }
-
-        ensureAudio(); popUpUp();
+        pop();
         if(!musicOn) { try { await startMusic(); } catch(_){} }
-
-        const ans = "TAK 💖";
-        setLocalAnswer(ans);
-        openMessageApp(ans);
-        showOverlay(ans);
+        openMessageApp("TAK 💖");
       });
     }
 
     yes.addEventListener("pointerdown", (e)=>{ e.preventDefault(); handleYes(e); }, {passive:false});
     yes.addEventListener("click", (e)=>{ e.preventDefault(); handleYes(e); });
 
-    sendAgain.addEventListener("click", async () => {
-      ensureAudio(); popUpUp();
-      if(!musicOn) { try { await startMusic(); } catch(_){} }
-      const saved = getLocalAnswer();
-      openMessageApp(saved?.answer || "TAK 💖");
-    });
-    closeOverlay.addEventListener("click", () => overlay.classList.remove("on"));
-
-    window.addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 250));
-    window.addEventListener("resize", () => setTimeout(moveNoAvoidYes, 120));
+    addEventListener("resize", () => setTimeout(moveNoAvoidYes, 120));
+    addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 250));
   </script>
 </body>
 </html>
