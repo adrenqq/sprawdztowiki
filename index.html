@@ -13,7 +13,6 @@
       --padBot: max(16px, env(safe-area-inset-bottom));
       --padLR: 14px;
       --softShadow: 0 14px 30px rgba(0,0,0,.14);
-      --shadow: 0 18px 55px rgba(0,0,0,.18);
     }
 
     *{ box-sizing:border-box; }
@@ -77,7 +76,6 @@
       100%{ transform: translateY(-25svh) translateX(90px) rotate(360deg); opacity:0; }
     }
 
-    /* transparent wrapper */
     .card{
       width: min(720px, 94vw);
       background: transparent;
@@ -87,7 +85,6 @@
       z-index:1;
     }
 
-    /* frosted text area only */
     .frost{
       display:inline-block;
       padding: 12px 14px;
@@ -98,7 +95,6 @@
       box-shadow: var(--softShadow);
     }
 
-    /* question floats */
     .floatWrap{
       display:inline-block;
       animation: titleDrift 6.6s ease-in-out infinite;
@@ -115,7 +111,6 @@
     h1{ margin: 4px 0 8px; font-size: clamp(22px, 5.6vw, 34px); line-height:1.15; }
     .sub{ margin:0; font-size: clamp(13px, 3.5vw, 16px); color: rgba(20,10,18,.82); font-weight:650; }
 
-    /* NOTE (editable) */
     .note{
       margin-top: 10px;
       padding: 10px 12px;
@@ -128,7 +123,7 @@
       backdrop-filter: blur(10px);
     }
 
-    /* photos: stable 2x2 for iPhone */
+    /* photos: stable 2x2 */
     .photos{
       width: min(720px, 94vw);
       margin: 14px auto 12px;
@@ -136,6 +131,8 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
+
+    /* FORCE drift on every tile + clickable */
     .photo{
       border-radius: 16px;
       overflow:hidden;
@@ -144,7 +141,13 @@
       box-shadow: 0 16px 32px rgba(0,0,0,.14);
       backdrop-filter: blur(8px);
       will-change: transform;
-      animation: drift 6.4s ease-in-out infinite;
+      animation-name: drift;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-duration: 6.4s;
+      cursor: pointer;
+      position: relative;
+      transform-style: preserve-3d;
     }
     .photo:nth-child(2){ animation-duration: 7.1s; animation-delay: .25s; }
     .photo:nth-child(3){ animation-duration: 7.7s; animation-delay: .5s; }
@@ -156,6 +159,8 @@
       object-fit: cover;
       display:block;
       transform: scale(1.01);
+      transition: transform .35s ease, filter .35s ease;
+      backface-visibility: hidden;
     }
 
     @keyframes drift{
@@ -164,6 +169,38 @@
       50%  { transform: translateX(0) translateY(-6px) rotate(-0.08deg); }
       75%  { transform: translateX(-6px) translateY(-3px) rotate(0.10deg); }
       100% { transform: translateX(0) translateY(0) rotate(-0.12deg); }
+    }
+
+    /* extra flair on tap */
+    .photo:active img{ transform: scale(1.04); }
+
+    /* swap animation class */
+    .photo.swap{
+      animation: drift 6.4s ease-in-out infinite, flipPop 520ms ease-out 1;
+    }
+    @keyframes flipPop{
+      0%   { transform: translateX(0) translateY(0) rotate(-0.12deg) scale(1); }
+      40%  { transform: translateX(0) translateY(-6px) rotate(0.12deg) scale(1.03); }
+      100% { transform: translateX(0) translateY(0) rotate(-0.12deg) scale(1); }
+    }
+
+    /* shine overlay */
+    .photo::after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%);
+      transform: translateX(-120%) rotate(10deg);
+      opacity:0;
+      pointer-events:none;
+    }
+    .photo.swap::after{
+      opacity:1;
+      animation: shine 520ms ease-out 1;
+    }
+    @keyframes shine{
+      0%{ transform: translateX(-120%) rotate(10deg); }
+      100%{ transform: translateX(120%) rotate(10deg); }
     }
 
     /* buttons */
@@ -224,7 +261,7 @@
       font-weight: 900;
     }
 
-    /* smaczek: sparkles */
+    /* sparkles */
     .spark{
       position:fixed;
       z-index: 100000;
@@ -256,11 +293,11 @@
       <div class="note">XXXXX</div>
     </div>
 
-    <div class="photos">
-      <div class="photo"><img src="images/1.jpg.JPEG" alt="photo 1"></div>
-      <div class="photo"><img src="images/2.jpg.JPEG" alt="photo 2"></div>
-      <div class="photo"><img src="images/3.jpg.JPEG" alt="photo 3"></div>
-      <div class="photo"><img src="images/4.jpg.JPEG" alt="photo 4"></div>
+    <div class="photos" id="photos">
+      <div class="photo" data-slot="1"><img id="img1" src="images/1.jpg.JPEG" alt="photo 1"></div>
+      <div class="photo" data-slot="2"><img id="img2" src="images/2.jpg.JPEG" alt="photo 2"></div>
+      <div class="photo" data-slot="3"><img id="img3" src="images/3.jpg.JPEG" alt="photo 3"></div>
+      <div class="photo" data-slot="4"><img id="img4" src="images/4.jpg.JPEG" alt="photo 4"></div>
     </div>
 
     <div id="arena">
@@ -365,9 +402,7 @@
       musicBtn.textContent = "🔊 Muzyka";
     }
     musicBtn.addEventListener("click", () => musicOn ? stopMusic() : startMusic());
-
-    // try autoplay (may be blocked on iPhone; button remains)
-    setTimeout(()=>startMusic(), 250);
+    setTimeout(()=>startMusic(), 250); // try autoplay
 
     // ====== title ======
     $("title").textContent = `💘 Czy zostaniesz moją Walentynką ${getNameFromUrl()}? 💘`;
@@ -459,7 +494,6 @@
 
     moveNoAvoidYes();
 
-    // anti double fire on iOS
     let lastFire = 0;
     function fireOnce(fn){
       const now = Date.now();
@@ -509,6 +543,67 @@
 
     addEventListener("resize", () => setTimeout(moveNoAvoidYes, 120));
     addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 250));
+
+    // ====== PHOTO SWAP (4 -> 3 -> 2 -> 1) ======
+    // U CIEBIE PLIKI W FOLDERZE images SĄ TAKIE:
+    // 1.jpg.JPEG, 1_2.jpg.JPEG, 1_3.jpg.JPEG
+    // 2.jpg.JPEG, 2_2.jpg.JPEG, 2_3.jpg.JPEG
+    // 3.jpg.JPEG, 3_2.jpg.JPEG, 3_3.jpg.JPEG
+    // 4.jpg.JPEG, 4_2.jpg.JPEG
+    const photoSets = {
+      1: ["images/1.jpg.JPEG", "images/1_2.jpg.JPEG", "images/1_3.jpg.JPEG"],
+      2: ["images/2.jpg.JPEG", "images/2_2.jpg.JPEG", "images/2_3.jpg.JPEG"],
+      3: ["images/3.jpg.JPEG", "images/3_2.jpg.JPEG", "images/3_3.jpg.JPEG"],
+      4: ["images/4.jpg.JPEG", "images/4_2.jpg.JPEG"]
+    };
+    const photoIndex = {1:0,2:0,3:0,4:0};
+    const clickOrder = [4,3,2,1];
+    let orderIdx = 0;
+
+    function swapOne(slot){
+      const tile = document.querySelector(`.photo[data-slot="${slot}"]`);
+      const img  = document.getElementById(`img${slot}`);
+      if(!tile || !img) return;
+
+      const list = photoSets[slot] || [];
+      if(list.length < 2) return;
+
+      photoIndex[slot] = (photoIndex[slot] + 1) % list.length;
+
+      tile.classList.add("swap");
+      img.style.filter = "saturate(1.12) contrast(1.05)";
+      img.style.transform = "scale(1.05)";
+
+      const nextSrc = list[photoIndex[slot]];
+      const pre = new Image();
+      pre.onload = () => { img.src = nextSrc; };
+      pre.onerror = () => { img.src = nextSrc; };
+      pre.src = nextSrc;
+
+      setTimeout(() => {
+        tile.classList.remove("swap");
+        img.style.filter = "";
+        img.style.transform = "scale(1.01)";
+      }, 560);
+    }
+
+    function handlePhotoClick(){
+      fireOnce(() => {
+        pop();
+        if(!musicOn) startMusic().catch(()=>{});
+        const slot = clickOrder[orderIdx];
+        orderIdx = (orderIdx + 1) % clickOrder.length;
+        swapOne(slot);
+      });
+    }
+
+    // kliknięcie w dowolne zdjęcie uruchamia sekwencję 4->3->2->1
+    document.getElementById("photos").addEventListener("click", (e) => {
+      const tile = e.target.closest(".photo");
+      if(!tile) return;
+      e.preventDefault();
+      handlePhotoClick();
+    }, {passive:false});
   </script>
 </body>
 </html>
