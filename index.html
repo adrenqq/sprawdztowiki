@@ -177,7 +177,7 @@
       transform: translate(-50%, -50%);
       transition: left .22s ease, top .22s ease, transform .22s ease;
       will-change: left, top, transform;
-      touch-action: none;
+      touch-action: manipulation;
     }
 
     #result{
@@ -274,7 +274,7 @@
   <script>
     // ========= SETTINGS =========
     const MY_PHONE_E164 = "+48690980775";
-    const KEY = "valentine_answer_v7";
+    const KEY = "valentine_answer_v9";
     const needed = 5;
 
     // ========= UTIL =========
@@ -288,7 +288,7 @@
     }
     function nowStamp(){ return new Date().toLocaleString("pl-PL"); }
 
-    // ========= MOBILE AUDIO FIX =========
+    // ========= AUDIO (stable on mobile) =========
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -301,21 +301,30 @@
       }catch(e){ return null; }
     }
 
-    function clickPop(){
+    // "pop up up" (3 little rising pops)
+    function popUpUp(){
       const ctx = ensureAudio();
       if(!ctx) return;
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = "triangle";
-      o.frequency.setValueAtTime(520, ctx.currentTime);
-      o.frequency.exponentialRampToValueAtTime(190, ctx.currentTime + 0.12);
-      g.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.14);
-      o.connect(g); g.connect(ctx.destination);
-      o.start();
-      o.stop(ctx.currentTime + 0.15);
+
+      const times = [0.00, 0.07, 0.14];
+      const freqs = [420, 560, 740];
+
+      times.forEach((dt, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "triangle";
+        o.frequency.setValueAtTime(freqs[i], ctx.currentTime + dt);
+        g.gain.setValueAtTime(0.0001, ctx.currentTime + dt);
+        g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + dt + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dt + 0.06);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(ctx.currentTime + dt);
+        o.stop(ctx.currentTime + dt + 0.065);
+      });
     }
+
+    // unlock audio on first user gesture
+    window.addEventListener("pointerdown", () => ensureAudio(), { once:true });
 
     // ========= HEARTS =========
     const heartsBox = $("hearts");
@@ -362,15 +371,22 @@
       try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; }
     }
 
-    // ========= SMS / iMessage =========
-    function openMessageApp(ans){
-      const text = `Odpowiedź: ${ans} 💘 (czas: ${nowStamp()})`;
-      window.location.href = `sms:${MY_PHONE_E164}&body=${encodeURIComponent(text)}`;
+    // ========= SMS / iMessage (iOS & Android) =========
+    function isIOS(){
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     }
 
-    // ========= NO movement + countdown-on-click =========
+    function openMessageApp(ans){
+      const text = `Odpowiedź: ${ans} 💘 (czas: ${nowStamp()})`;
+      const body = encodeURIComponent(text);
+      const sep = isIOS() ? "&" : "?";
+      const url = `sms:${MY_PHONE_E164}${sep}body=${body}`;
+      setTimeout(() => { window.location.href = url; }, 60);
+    }
+
+    // ========= NO movement: ESCAPES ONLY AFTER CLICK =========
     let noClicks = 0;
-    no.textContent = "NIE 😈"; // start: no counter
+    no.textContent = "NIE 😈"; // no counter until first click
 
     function intersects(ax, ay, aw, ah, bx, by, bw, bh){
       return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
@@ -402,7 +418,7 @@
         x = bounds.left + Math.random() * maxX;
         y = bounds.top + Math.random() * maxY;
         tries++;
-        if(tries > 140) break;
+        if(tries > 160) break;
       } while(
         intersects(
           x, y, btn.width, btn.height,
@@ -416,22 +432,18 @@
       no.style.transform = "translate(0,0)";
     }
 
-    // ucieka na hover / dotyk
-    no.addEventListener("mouseenter", moveNoAvoidYes);
-    no.addEventListener("touchstart", (e)=>{ e.preventDefault(); ensureAudio(); moveNoAvoidYes(); }, {passive:false});
-
-    // klik: pokaz licznik ile zostało; na ostatnim SMS
+    // ONLY on click: update counter + run away
     no.addEventListener("click", (e) => {
       e.preventDefault();
       ensureAudio();
-      clickPop();
+      popUpUp();
 
       noClicks++;
       const left = needed - noClicks;
 
       if(left > 0){
         no.textContent = `NIE 😈 (${left})`;
-        moveNoAvoidYes();
+        moveNoAvoidYes(); // ucieka dopiero po kliknięciu
         result.textContent = "";
       } else {
         const ans = "NIE 😈";
@@ -445,7 +457,7 @@
     // ========= YES =========
     yes.addEventListener("click", () => {
       ensureAudio();
-      clickPop();
+      popUpUp();
       const ans = "TAK 💖";
       setLocalAnswer(ans);
       result.textContent = "YAY! 💘 Widzimy się na Walentynki 😄";
@@ -463,14 +475,14 @@
 
     sendAgain.addEventListener("click", () => {
       ensureAudio();
-      clickPop();
+      popUpUp();
       const saved = getLocalAnswer();
       openMessageApp(saved?.answer || "TAK 💖");
     });
 
     closeOverlay.addEventListener("click", () => overlay.classList.remove("on"));
 
-    // Start
+    // Start: set initial random position (no escape yet)
     moveNoAvoidYes();
     window.addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 300));
   </script>
