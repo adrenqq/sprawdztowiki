@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Czy zostaniesz moją Walentynką? 💘</title>
 
-<!-- PRELOAD OBRAZÓW -->
+<!-- ✅ PRELOAD: Twoje obrazy + sukces + audio -->
 <link rel="preload" as="image" href="images/1.jpg.JPEG">
 <link rel="preload" as="image" href="images/1_2.jpeg.JPEG">
 <link rel="preload" as="image" href="images/1_3.jpg.JPEG">
@@ -18,297 +18,803 @@
 <link rel="preload" as="image" href="images/4.jpg.JPEG">
 <link rel="preload" as="image" href="images/4_2.jpg.JPEG">
 <link rel="preload" as="image" href="images/5_2.jpg.JPEG">
-
-<!-- PRELOAD AUDIO -->
 <link rel="preload" as="audio" href="MORAD - LAMINE (mp3cut.net).mp3">
 
 <style>
-:root{
-  --pink1:#ffb3d1;
-  --pink2:#ff8fc1;
-  --pink3:#ff6fb3;
-  --text:#3a0026;
-}
-
-*{box-sizing:border-box}
-html,body{height:100%}
-
-body{
-  margin:0;
-  min-height:100svh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:var(--text);
-
-  background:
-    radial-gradient(900px 650px at 20% 10%, rgba(255,255,255,.32) 0%, transparent 58%),
-    radial-gradient(900px 650px at 80% 90%, rgba(255,255,255,.26) 0%, transparent 58%),
-    linear-gradient(135deg,var(--pink1),var(--pink2),var(--pink3));
-}
-
-/* START SCREEN */
-#start{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
-  background:inherit;
-  z-index:50;
-}
-
-#start p{
-  max-width:520px;
-  line-height:1.6;
-  font-size:18px;
-}
-
-#start button{
-  margin-top:30px;
-  font-size:24px;
-  padding:16px 36px;
-  border:none;
-  border-radius:18px;
-  background:#35c759;
-  color:#fff;
-  font-weight:700;
-  box-shadow:0 10px 25px rgba(0,0,0,.25);
-}
-
-/* MAIN */
-#main{display:none;text-align:center;max-width:460px;width:100%}
-
-/* NAPIS */
-h1{
-  margin:0 0 10px;
-  padding:18px 20px;
-  border-radius:22px;
-  background:rgba(255,255,255,.18);
-  backdrop-filter:blur(8px);
-  box-shadow:0 10px 30px rgba(0,0,0,.15);
-}
-
-/* GRID */
-.grid{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-}
-
-.tile{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:18px;
-  overflow:hidden;
-  position:relative;
-}
-
-.tile img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:18px;
-  animation:float 6s ease-in-out infinite;
-}
-
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-}
-
-/* BUTTONS */
-.buttons{
-  margin-top:20px;
-  display:flex;
-  justify-content:center;
-  gap:16px;
-}
-
-button{
-  font-size:20px;
-  padding:14px 26px;
-  border:none;
-  border-radius:16px;
-  font-weight:700;
-}
-
-#yes{background:#35c759;color:#fff}
-#no{background:#ff3b30;color:#fff;position:relative}
-
-/* SUCCESS SCREEN */
-#success{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:url("images/5_2.jpg.JPEG") center/cover no-repeat;
-  z-index:60;
-  color:#fff;
-  text-align:center;
-}
-
-#success h2{
-  font-size:42px;
-  text-shadow:0 6px 20px rgba(0,0,0,.6);
-}
-
-/* FIREWORKS */
-.firework{
-  position:absolute;
-  width:6px;height:6px;
-  border-radius:50%;
-  background:#fff;
-  animation:explode 1s ease-out forwards;
-}
-
-@keyframes explode{
-  to{
-    transform:translate(var(--x),var(--y)) scale(0);
-    opacity:0;
+  :root{
+    --pink1:#ffb3d1;
+    --pink2:#ff8fc1;
+    --pink3:#ff6fb3;
+    --text:#3a0026;
+    --shadow: 0 20px 50px rgba(0,0,0,.20);
   }
-}
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+
+  body{
+    margin:0;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 650px at 20% 10%, rgba(255,255,255,.32) 0%, transparent 58%),
+      radial-gradient(900px 650px at 80% 90%, rgba(255,255,255,.26) 0%, transparent 58%),
+      linear-gradient(135deg,var(--pink1),var(--pink2),var(--pink3));
+    overflow:hidden;
+    text-align:center;
+  }
+
+  /* floating hearts */
+  .hearts{
+    position:fixed; inset:0;
+    pointer-events:none;
+    opacity:.62;
+    z-index: 99998;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
+  }
+  .hearts span{
+    position:absolute;
+    transform: translateY(110svh);
+    animation: floatUp linear infinite;
+    will-change: transform, opacity;
+    user-select:none;
+  }
+  @keyframes floatUp{
+    0%{ transform: translateY(110svh) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:1; }
+    90%{ opacity:1; }
+    100%{ transform: translateY(-25svh) translateX(90px) rotate(360deg); opacity:0; }
+  }
+
+  /* ===== START SCREEN ===== */
+  #startScreen{
+    position:fixed;
+    inset:0;
+    z-index: 200000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  }
+  #startCard{
+    width:min(680px, 94vw);
+    text-align:center;
+  }
+  #startText{
+    padding: 14px 16px;
+    border-radius: 22px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.20);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 18px 45px rgba(0,0,0,.16);
+    font-weight: 750;
+    line-height: 1.55;
+  }
+  #startText .small{ font-weight: 650; opacity:.92; }
+  #startBtn{
+    margin-top: 18px;
+    border:none;
+    border-radius: 18px;
+    padding: 16px 28px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor:pointer;
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+    color:#fff;
+    box-shadow: 0 14px 26px rgba(0,0,0,.20);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ===== MAIN CARD (teraz bez “białych kwadratów”) ===== */
+  .card{
+    width:min(460px, 92vw);
+    background: transparent;            /* ✅ bez białego tła */
+    border: 0;
+    box-shadow: none;
+    position:relative;
+    z-index:1;
+  }
+
+  /* delikatne tło tylko pod głównymi napisami */
+  .titleWrap{
+    display:inline-block;
+    padding: 12px 14px;
+    border-radius: 22px;
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 14px 30px rgba(0,0,0,.14);
+    margin-bottom: 10px;
+  }
+
+  h1{ margin:4px 0 8px; font-size: clamp(22px, 5.6vw, 30px); line-height:1.15; }
+  .sub{ margin:0; font-size: 14px; font-weight: 700; opacity:.92; }
+
+  .note{
+    margin-top: 10px;
+    font-size:14px;
+    font-weight:800;
+    opacity:.92;
+  }
+
+  /* photos grid */
+  .photos{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin:14px 0 12px;
+  }
+
+  .photo{
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    animation: floaty 6.4s ease-in-out infinite;
+    transform: translateZ(0);
+    will-change: transform;
+    box-shadow: 0 14px 28px rgba(0,0,0,.18);
+    background: rgba(255,255,255,.08);  /* ✅ delikatny “mat” zamiast bieli */
+    border: 1px solid rgba(255,255,255,.14);
+  }
+  .photo:nth-child(2){ animation-delay:.7s; animation-duration: 7.2s; }
+  .photo:nth-child(3){ animation-delay:1.4s; animation-duration: 7.7s; }
+  .photo:nth-child(4){ animation-delay:2.1s; animation-duration: 8.3s; }
+
+  @keyframes floaty{
+    0%,100%{ transform:translateY(0) rotate(-0.5deg); }
+    50%{ transform:translateY(-9px) rotate(0.5deg); }
+  }
+
+  .photo img{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit: cover; /* ✅ estetycznie, bez “kwadratu w środku” */
+    display:block;
+    user-select:none;
+    -webkit-user-drag:none;
+    transform: scale(1.01);
+    opacity:1;
+    transition: opacity 220ms ease, transform 220ms ease;
+    will-change: opacity, transform;
+  }
+
+  .photo.swap img{
+    opacity:0;
+    transform: scale(1.03);
+  }
+
+  /* buttons */
+  #arena{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin-top:8px;
+    position:relative;
+    z-index:2;
+  }
+
+  button{
+    border:none;
+    border-radius:999px;
+    padding:14px 22px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 12px 22px rgba(0,0,0,.22);
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  button:active{ transform: scale(.98); }
+
+  #yes{ background: linear-gradient(135deg,#22c55e,#16a34a); color:#fff; }
+
+  #no{
+    background: linear-gradient(135deg,#ff355d,#e11d48);
+    color:#fff;
+    position:fixed;
+    z-index: 99999;
+    left: 70%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    transition: left .20s ease, top .20s ease, transform .20s ease;
+    will-change: left, top, transform;
+  }
+
+  #result{ margin-top:10px; font-weight:900; min-height:22px; }
+
+  /* music button */
+  #musicBtn{
+    position:fixed;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 99997;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.25);
+    color: rgba(20,10,18,.92);
+    box-shadow: 0 14px 26px rgba(0,0,0,.14);
+    backdrop-filter: blur(12px);
+    padding: 10px 14px;
+    font-weight: 900;
+  }
+
+  /* sparkles */
+  .spark{
+    position:fixed;
+    z-index: 100000;
+    pointer-events:none;
+    font-size: 18px;
+    animation: spark 650ms ease-out forwards;
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.18));
+    will-change: transform, opacity;
+  }
+  @keyframes spark{
+    0%   { transform: translate(-50%, -50%) scale(.8); opacity:0; }
+    15%  { opacity:1; }
+    100% { transform: translate(-50%, -70px) scale(1.25) rotate(16deg); opacity:0; }
+  }
+
+  /* ===== SUCCESS OVERLAY ===== */
+  #successOverlay{
+    position:fixed;
+    inset:0;
+    z-index: 1000000;
+    display:none;
+    background:#000;
+  }
+  #successOverlay.show{ display:block; }
+
+  #successImg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    animation: fadeIn 420ms ease-out forwards;
+    transform: scale(1.01);
+  }
+  @keyframes fadeIn{ to{ opacity:1; } }
+
+  #successShade{
+    position:absolute; inset:0;
+    background: radial-gradient(800px 500px at 50% 35%, rgba(0,0,0,.10), rgba(0,0,0,.28));
+    pointer-events:none;
+  }
+
+  #fw{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+  }
+
+  .bigHearts{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .bigHearts span{
+    position:absolute;
+    bottom:-20%;
+    font-size: clamp(44px, 9vw, 90px);
+    animation: bigHeartUp 1.5s ease-out forwards;
+    filter: drop-shadow(0 16px 22px rgba(0,0,0,.25));
+    opacity:0;
+    will-change: transform, opacity;
+  }
+  @keyframes bigHeartUp{
+    0%{ transform: translateY(0) scale(.85) rotate(-8deg); opacity:0; }
+    15%{ opacity:1; }
+    100%{ transform: translateY(-125vh) scale(1.15) rotate(12deg); opacity:0; }
+  }
+
+  #loveText{
+    position:absolute;
+    left:50%;
+    top:52%;
+    transform: translate(-50%,-50%);
+    z-index: 1000002;
+    padding: 10px 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.22);
+    backdrop-filter: blur(10px);
+    color: rgba(255,255,255,.96);
+    font-weight: 900;
+    font-size: clamp(20px, 5vw, 34px);
+    text-shadow: 0 14px 28px rgba(0,0,0,.35);
+    opacity:0;
+    animation: loveIn 520ms ease-out forwards;
+  }
+  @keyframes loveIn{
+    0%{ opacity:0; transform: translate(-50%,-50%) scale(.92); }
+    100%{ opacity:1; transform: translate(-50%,-50%) scale(1); }
+  }
 </style>
 </head>
+
 <body>
+  <div class="hearts" id="hearts"></div>
 
-<!-- START -->
-<div id="start">
-  <p>
-Hej, bardzo długo nad tym pracowałem.<br>
-Proszę daj temu chwilę.<br><br>
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <div id="startCard">
+      <div id="startText">
+        Hej, bardzo długo nad tym pracowałem.<br>
+        Proszę daj temu chwilę.<br><br>
 
-Proszę cię po kliknięciu „ dalej „ poczekaj aż się załaduje,
-klikaj tak z 2 sekundową przerwa
-( żeby się załadowało 😜)
-i spokojnie dojdź do końca…
-( będziesz miała licznik) haha.<br><br>
+        <span class="small">
+          Proszę cię po kliknięciu „ dalej „ poczekaj aż się załaduje, klikaj tak z 2 sekundową przerwa
+          ( żeby się załadowało 😜) i spokojnie dojdź do końca… ( będziesz miała licznik) haha.
+          <br><br>
+          Jeżeli zapyta Cię o pozwolenie do przejścia w imassage- kliknij . Spokojnie to bezpieczna strona, sam ją pisałem.
+          <br><br>
+          I hope u enjoy 😇🥰❤️
+        </span>
+      </div>
 
-Jeżeli zapyta Cię o pozwolenie do przejścia w imassage- kliknij .
-Spokojnie to bezpieczna strona, sam ją pisałem.<br><br>
-
-I hope u enjoy 😇🥰❤️
-  </p>
-
-  <button onclick="startApp()">DALEJ</button>
-</div>
-
-<!-- MAIN -->
-<div id="main">
-  <h1>Czy zostaniesz moją Walentynką? 💖</h1>
-
-  <div class="grid">
-    <div class="tile"><img id="img1" src="images/1.jpg.JPEG"></div>
-    <div class="tile"><img id="img2" src="images/2.jpg.JPEG"></div>
-    <div class="tile"><img id="img3" src="images/3.jpg.JPEG"></div>
-    <div class="tile"><img id="img4" src="images/4.jpg.JPEG"></div>
+      <button id="startBtn">DALEJ</button>
+    </div>
   </div>
 
-  <div class="buttons">
-    <button id="yes" onclick="clickYes()">TAK (7)</button>
-    <button id="no" onclick="clickNo()">NIE (10)</button>
+  <!-- MAIN -->
+  <div class="card" id="mainCard" style="display:none;">
+    <div class="titleWrap">
+      <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
+      <p class="sub">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
+      <div class="note">XXXXX</div>
+    </div>
+
+    <div class="photos">
+      <div class="photo" data-slot="1"><img id="img1" src="images/1.jpg.JPEG" alt="1"></div>
+      <div class="photo" data-slot="2"><img id="img2" src="images/2.jpg.JPEG" alt="2"></div>
+      <div class="photo" data-slot="3"><img id="img3" src="images/3.jpg.JPEG" alt="3"></div>
+      <div class="photo" data-slot="4"><img id="img4" src="images/4.jpg.JPEG" alt="4"></div>
+    </div>
+
+    <div id="arena">
+      <button id="yes">TAK 💖 (7)</button>
+    </div>
+
+    <div id="result"></div>
   </div>
-</div>
 
-<!-- SUCCESS -->
-<div id="success">
-  <h2>Kocham cię ❤️</h2>
-</div>
+  <button id="no">NIE 😈</button>
 
-<audio id="music" src="MORAD - LAMINE (mp3cut.net).mp3"></audio>
+  <audio id="bgm" preload="auto" loop playsinline>
+    <source src="MORAD%20-%20LAMINE%20(mp3cut.net).mp3" type="audio/mpeg">
+  </audio>
+  <button id="musicBtn">🔊 Muzyka</button>
+
+  <!-- SUCCESS OVERLAY -->
+  <div id="successOverlay">
+    <img id="successImg" src="images/5_2.jpg.JPEG" alt="success">
+    <div id="successShade"></div>
+    <canvas id="fw"></canvas>
+    <div class="bigHearts" id="bigHearts"></div>
+    <div id="loveText">kocham cię ❤️</div>
+  </div>
 
 <script>
-let yesCount=0
-let noCount=0
+  const MY_PHONE_E164 = "+48690980775";
+  const NO_TOTAL = 10;
+  const YES_TOTAL = 7;
 
-const imgSets=[
- ["images/4.jpg.JPEG","images/4_2.jpg.JPEG"],
- ["images/3.jpg.JPEG","images/3_2.jpg.JPEG","images/3_3.jpg.JPEG"],
- ["images/2.jpg.JPEG","images/2_2.jpg.JPEG","images/2_3.jpg.JPEG"],
- ["images/1.jpg.JPEG","images/1_2.jpeg.JPEG","images/1_3.jpg.JPEG"]
-]
+  const YES_SMS_TEXT = "TAK❤️czekam na ciebie jutro wieczorem 🥰";
+  const NO_SMS_TEXT  = "nie, jednak nie przyjeżdżaj…. ale dziękuję, to było naprawdę słodkie poprawiło mi trochę humor. Też cię kocham 🫶🏽";
 
-function startApp(){
- document.getElementById("start").style.display="none"
- document.getElementById("main").style.display="block"
- document.getElementById("music").play().catch(()=>{})
-}
+  const NO_LINES = [
+    "na pewno?",
+    "Może jednak?",
+    "Jeden wieczór?",
+    "Ej…..",
+    "poważnie?",
+    "kocham cię.",
+    "OK, negocjacje: Ty TAK, ja deser. Deal? 🍰",
+    "Zgubiłem argumenty… zostało mi tylko: pls 😭",
+    "Ostatnie 3% baterii i 97% uczuć 🥺",
+    "Dobra, to już nie NIE, tylko ‘BOJĘ SIĘ SZCZĘŚCIA’ 😈"
+  ];
 
-function clickYes(){
- if(yesCount<7){
-   changeImages(yesCount)
-   yesCount++
-   document.getElementById("yes").innerText="TAK ("+(7-yesCount)+")"
- }
+  const $ = (id) => document.getElementById(id);
 
- if(yesCount===7){
-   showSuccess()
- }
-}
+  // ===== name param =====
+  function getNameFromUrl(){
+    const p = new URLSearchParams(location.search);
+    const raw = (p.get("name") || "").trim();
+    const safe = raw.replace(/[<>]/g, "").slice(0, 24);
+    return safe || "Wiktoria";
+  }
+  $("title").textContent = `💘 Czy zostaniesz moją Walentynką ${getNameFromUrl()}? 💘`;
 
-function clickNo(){
- if(noCount<10){
-   noCount++
-   document.getElementById("no").innerText="NIE ("+(10-noCount)+")"
-   moveNo()
- }
+  // ===== preload in JS (warm cache) =====
+  const warmImages = [
+    "images/1.jpg.JPEG","images/1_2.jpeg.JPEG","images/1_3.jpg.JPEG",
+    "images/2.jpg.JPEG","images/2_2.jpg.JPEG","images/2_3.jpg.JPEG",
+    "images/3.jpg.JPEG","images/3_2.jpg.JPEG","images/3_3.jpg.JPEG",
+    "images/4.jpg.JPEG","images/4_2.jpg.JPEG",
+    "images/5_2.jpg.JPEG"
+  ];
+  warmImages.forEach(src => { const im = new Image(); im.decoding="async"; im.src = src; });
 
- if(noCount===10){
-   setTimeout(()=>{
-     location.href="sms:&body=nie, jednak nie przyjeżdżaj…. ale dziękuję, to było naprawdę słodkie poprawiło mi trochę humor. Też cię kocham 🫶🏽"
-   },1000)
- }
-}
+  // ===== sparkles =====
+  function sparkleAt(x, y){
+    const chars = ["✨","💖","💘","🌟","💞"];
+    const s = document.createElement("div");
+    s.className = "spark";
+    s.textContent = chars[Math.floor(Math.random()*chars.length)];
+    s.style.left = x + "px";
+    s.style.top  = y + "px";
+    s.style.fontSize = (16 + Math.random()*10) + "px";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 700);
+  }
 
-function moveNo(){
- const b=document.getElementById("no")
- const x=Math.random()*120-60
- const y=Math.random()*80-40
- b.style.transform=`translate(${x}px,${y}px)`
-}
+  // ===== pop sound =====
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+  function ensureAudio(){
+    try{
+      if(!AudioCtx) return null;
+      if(!audioCtx) audioCtx = new AudioCtx();
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      return audioCtx;
+    }catch(e){ return null; }
+  }
+  function pop(){
+    const ctx = ensureAudio();
+    if(!ctx) return;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "triangle";
+    o.frequency.value = 520;
+    g.gain.value = 0.0001;
+    g.gain.exponentialRampToValueAtTime(0.20, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime + 0.09);
+  }
 
-function changeImages(step){
- const imgs=["img4","img3","img2","img1"]
- if(imgSets[step]){
-   const id=imgs[step]
-   const set=imgSets[step]
-   const el=document.getElementById(id)
-   const idx=(Math.floor(Math.random()*set.length))
-   el.src=set[idx]
- }
-}
+  // ===== music =====
+  const bgm = $("bgm");
+  const musicBtn = $("musicBtn");
+  let musicOn = false;
 
-function showSuccess(){
- const s=document.getElementById("success")
- s.style.display="flex"
+  async function startMusic(){
+    try{
+      ensureAudio();
+      bgm.volume = 0.35;
+      await bgm.play();
+      musicOn = true;
+      musicBtn.textContent = "🔇 Muzyka";
+    }catch(e){
+      musicOn = false;
+      musicBtn.textContent = "🔊 Muzyka";
+    }
+  }
+  function stopMusic(){
+    try{ bgm.pause(); }catch(e){}
+    musicOn = false;
+    musicBtn.textContent = "🔊 Muzyka";
+  }
+  musicBtn.addEventListener("click", () => musicOn ? stopMusic() : startMusic());
 
- launchFireworks()
+  function ensureMusicFromInteraction(){
+    if(!musicOn) startMusic().catch(()=>{});
+  }
 
- setTimeout(()=>{
-   location.href="sms:&body=TAK❤️czekam na ciebie jutro wieczorem 🥰"
- },4000)
-}
+  // ===== background hearts =====
+  const heartsBox = $("hearts");
+  const heartChars = ["💗","💖","💘","💕","💞","❤️‍🔥","💝"];
+  function spawnHeart(){
+    const s = document.createElement("span");
+    s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+    const left = Math.random()*100;
+    const size = 14 + Math.random()*20;
+    const dur = 6 + Math.random()*7;
+    const delay = Math.random()*2;
+    s.style.left = left + "vw";
+    s.style.fontSize = size + "px";
+    s.style.animationDuration = dur + "s";
+    s.style.animationDelay = delay + "s";
+    heartsBox.appendChild(s);
+    setTimeout(() => s.remove(), (dur + delay) * 1000 + 250);
+  }
+  for(let i=0;i<18;i++) spawnHeart();
+  setInterval(spawnHeart, 420);
 
-function launchFireworks(){
- for(let i=0;i<40;i++){
-   const f=document.createElement("div")
-   f.className="firework"
-   f.style.left=Math.random()*100+"%"
-   f.style.top=Math.random()*100+"%"
-   f.style.setProperty("--x",(Math.random()*200-100)+"px")
-   f.style.setProperty("--y",(Math.random()*200-100)+"px")
-   document.getElementById("success").appendChild(f)
-   setTimeout(()=>f.remove(),1000)
- }
-}
+  // ===== sms =====
+  function isIOS(){
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+  function openMessageAppText(text){
+    const body = encodeURIComponent(text);
+    const sep = isIOS() ? "&" : "?";
+    location.href = `sms:${MY_PHONE_E164}${sep}body=${body}`;
+  }
+
+  // ===== photo swap config =====
+  const photoSets = {
+    1: ["images/1.jpg.JPEG", "images/1_2.jpeg.JPEG", "images/1_3.jpg.JPEG"],
+    2: ["images/2.jpg.JPEG", "images/2_2.jpg.JPEG", "images/2_3.jpg.JPEG"],
+    3: ["images/3.jpg.JPEG", "images/3_2.jpg.JPEG", "images/3_3.jpg.JPEG"],
+    4: ["images/4.jpg.JPEG", "images/4_2.jpg.JPEG"]
+  };
+  const photoIndex = {1:0,2:0,3:0,4:0};
+  const clickOrder = [4,3,2,1];
+  let orderIdx = 0;
+
+  function swapOne(slot){
+    const tile = document.querySelector(`.photo[data-slot="${slot}"]`);
+    const img  = document.getElementById(`img${slot}`);
+    if(!tile || !img) return;
+
+    const list = photoSets[slot] || [];
+    if(list.length < 2) return;
+
+    const nextIndex = (photoIndex[slot] + 1) % list.length;
+    const nextSrc = list[nextIndex];
+
+    const pre = new Image();
+    pre.onload = () => {
+      tile.classList.add("swap");
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          img.src = nextSrc;
+          photoIndex[slot] = nextIndex;
+          img.onload = () => tile.classList.remove("swap");
+          setTimeout(()=>tile.classList.remove("swap"), 260);
+        }, 220);
+      });
+    };
+    pre.onerror = () => { img.src = nextSrc; photoIndex[slot] = nextIndex; };
+    pre.src = nextSrc;
+  }
+
+  function advancePhotosOnce(){
+    const slot = clickOrder[orderIdx];
+    orderIdx = (orderIdx + 1) % clickOrder.length;
+    swapOne(slot);
+  }
+
+  // ===== NO / YES logic =====
+  const yes = $("yes");
+  const no  = $("no");
+  const result = $("result");
+
+  let noClicks = 0;
+  let yesClicks = 0;
+
+  function intersects(ax, ay, aw, ah, bx, by, bw, bh){
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  }
+
+  function moveNoAvoidYes(){
+    const pad = 12;
+    const vw = innerWidth;
+    const vh = innerHeight;
+
+    const btn = no.getBoundingClientRect();
+    const yesRect = yes.getBoundingClientRect();
+    const safeGap = 44;
+
+    let x, y, tries = 0;
+    do{
+      x = pad + Math.random() * Math.max(1, vw - btn.width - pad*2);
+      y = pad + Math.random() * Math.max(1, vh - btn.height - pad*2);
+      tries++;
+      if(tries > 220) break;
+    } while(
+      intersects(
+        x, y, btn.width, btn.height,
+        yesRect.left - safeGap, yesRect.top - safeGap,
+        yesRect.width + safeGap*2, yesRect.height + safeGap*2
+      )
+    );
+
+    no.style.left = x + "px";
+    no.style.top  = y + "px";
+    no.style.transform = "translate(0,0)";
+  }
+
+  function setNoLabel(step){
+    const left = NO_TOTAL - step;
+    const phrase = NO_LINES[step-1] || "serio?";
+    no.textContent = `${phrase} 😈 (${left})`;
+  }
+
+  function setYesLabel(){
+    const left = Math.max(0, YES_TOTAL - yesClicks);
+    yes.textContent = `TAK 💖 (${left})`;
+  }
+
+  // anti double fire
+  let lastFire = 0;
+  function fireOnce(fn){
+    const now = Date.now();
+    if(now - lastFire < 220) return;
+    lastFire = now;
+    fn();
+  }
+
+  // ===== SUCCESS overlay fireworks =====
+  const overlay = $("successOverlay");
+  const bigHearts = $("bigHearts");
+  const fwCanvas = $("fw");
+  const successImg = $("successImg");
+
+  let fwCtx, fwW, fwH, particles = [], fwRAF = null, fwEndAt = 0;
+
+  function resizeFW(){
+    fwW = fwCanvas.width = innerWidth * devicePixelRatio;
+    fwH = fwCanvas.height = innerHeight * devicePixelRatio;
+    fwCanvas.style.width = innerWidth + "px";
+    fwCanvas.style.height = innerHeight + "px";
+    fwCtx = fwCanvas.getContext("2d");
+  }
+
+  function burst(x, y){
+    const count = 46 + Math.floor(Math.random()*26);
+    const colors = [
+      "rgba(255,255,255,.95)",
+      "rgba(255,160,200,.95)",
+      "rgba(255,90,170,.95)",
+      "rgba(255,230,250,.95)"
+    ];
+    const col = colors[Math.floor(Math.random()*colors.length)];
+    for(let i=0;i<count;i++){
+      const a = Math.random()*Math.PI*2;
+      const sp = 2.0 + Math.random()*4.8;
+      particles.push({ x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - (1.2 + Math.random()*1.5), life: 55 + Math.random()*25, col });
+    }
+  }
+
+  function fwLoop(){
+    if(!fwCtx) return;
+    fwCtx.fillStyle = "rgba(0,0,0,.20)";
+    fwCtx.fillRect(0,0,fwW,fwH);
+
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.vy += 0.08;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+
+      fwCtx.beginPath();
+      fwCtx.arc(p.x, p.y, 2.2 * devicePixelRatio, 0, Math.PI*2);
+      fwCtx.fillStyle = p.col;
+      fwCtx.fill();
+
+      if(p.life <= 0) particles.splice(i,1);
+    }
+
+    if(Date.now() < fwEndAt){
+      if(Math.random() < 0.14){
+        burst((Math.random()*0.8+0.1)*fwW, (Math.random()*0.55+0.15)*fwH);
+      }
+      fwRAF = requestAnimationFrame(fwLoop);
+    } else {
+      fwCtx.clearRect(0,0,fwW,fwH);
+      cancelAnimationFrame(fwRAF);
+      fwRAF = null;
+      particles = [];
+    }
+  }
+
+  function spawnBigHeart(){
+    const s = document.createElement("span");
+    const hearts = ["💖","💘","💝","❤️","💞","💕"];
+    s.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+    s.style.left = Math.floor(Math.random()*85 + 5) + "vw";
+    s.style.animationDuration = (1.1 + Math.random()*0.7) + "s";
+    s.style.opacity = "1";
+    bigHearts.appendChild(s);
+    setTimeout(()=>s.remove(), 1700);
+  }
+
+  function showSuccessThenSMS(){
+    overlay.classList.add("show");
+    resizeFW();
+
+    // image already warmed, but set again
+    successImg.src = "images/5_2.jpg.JPEG";
+
+    let heartsInt = setInterval(spawnBigHeart, 120);
+    setTimeout(()=>clearInterval(heartsInt), 1800);
+
+    fwEndAt = Date.now() + 2400;
+    burst(0.35*fwW, 0.35*fwH);
+    burst(0.65*fwW, 0.30*fwH);
+    fwLoop();
+
+    // ✅ 4 sekundy dopiero SMS
+    setTimeout(() => {
+      openMessageAppText(YES_SMS_TEXT);
+    }, 4000);
+  }
+
+  function onNoClicked(e){
+    fireOnce(() => {
+      const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
+      const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
+      sparkleAt(x, y);
+      pop();
+      ensureMusicFromInteraction();
+
+      advancePhotosOnce();
+
+      noClicks++;
+      if(noClicks < NO_TOTAL){
+        setNoLabel(noClicks);
+        moveNoAvoidYes();
+      }else{
+        no.style.display = "none";
+        openMessageAppText(NO_SMS_TEXT);
+      }
+    });
+  }
+
+  function onYesClicked(e){
+    fireOnce(() => {
+      const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
+      const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
+
+      for(let i=0;i<3;i++){
+        setTimeout(()=>sparkleAt(x + (Math.random()*60-30), y + (Math.random()*40-20)), i*50);
+      }
+      pop();
+      ensureMusicFromInteraction();
+
+      advancePhotosOnce();
+
+      yesClicks++;
+      setYesLabel();
+
+      if(yesClicks >= YES_TOTAL){
+        yes.disabled = true;
+        no.disabled = true;
+        yes.style.opacity = "0.85";
+        no.style.opacity = "0.85";
+        showSuccessThenSMS();
+      }
+    });
+  }
+
+  // bind events (iPhone safe)
+  no.addEventListener("pointerdown", (e)=>{ e.preventDefault(); e.stopPropagation(); onNoClicked(e); }, {passive:false});
+  no.addEventListener("touchend",   (e)=>{ e.preventDefault(); e.stopPropagation(); onNoClicked(e); }, {passive:false});
+  no.addEventListener("click",      (e)=>{ e.preventDefault(); e.stopPropagation(); onNoClicked(e); });
+
+  yes.addEventListener("pointerdown",(e)=>{ e.preventDefault(); e.stopPropagation(); onYesClicked(e); }, {passive:false});
+  yes.addEventListener("click",     (e)=>{ e.preventDefault(); e.stopPropagation(); onYesClicked(e); });
+
+  addEventListener("resize", () => {
+    setTimeout(moveNoAvoidYes, 120);
+    if(overlay.classList.contains("show")) resizeFW();
+  });
+  addEventListener("orientationchange", () => {
+    setTimeout(moveNoAvoidYes, 250);
+    if(overlay.classList.contains("show")) setTimeout(resizeFW, 250);
+  });
+
+  // ===== start screen behavior =====
+  const startBtn = $("startBtn");
+  startBtn.addEventListener("click", () => {
+    $("startScreen").style.display = "none";
+    $("mainCard").style.display = "block";
+    // ustaw startową pozycję NIE dopiero jak pokażemy main
+    moveNoAvoidYes();
+    // spróbuj wystartować muzykę (czasem zadziała, czasem dopiero po kliknięciu TAK/NIE)
+    startMusic().catch(()=>{});
+  });
 </script>
-
 </body>
 </html>
