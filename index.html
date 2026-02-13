@@ -31,27 +31,7 @@ body{
   overflow:hidden;
 }
 
-/* floating hearts background */
-.bgHearts{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-}
-
-.heart{
-  position:absolute;
-  font-size:18px;
-  opacity:.25;
-  animation:floatUp linear infinite;
-}
-
-@keyframes floatUp{
-  from{transform:translateY(100vh) scale(.8)}
-  to{transform:translateY(-10vh) scale(1.2)}
-}
-
-/* START */
+/* START SCREEN */
 #startScreen{
   position:fixed;
   inset:0;
@@ -63,7 +43,10 @@ body{
   z-index:50;
 }
 
-.startBox{max-width:420px;line-height:1.55}
+.startBox{
+  max-width:420px;
+  line-height:1.55;
+}
 
 #startBtn{
   margin-top:28px;
@@ -83,8 +66,6 @@ body{
   width:100%;
   text-align:center;
   padding:18px;
-  position:relative;
-  z-index:2;
 }
 
 #title{
@@ -107,8 +88,6 @@ body{
   border-radius:10px;
   display:inline-block;
 }
-
-.note{margin-top:6px;font-size:14px;opacity:.9}
 
 /* PHOTOS */
 .photos{
@@ -154,7 +133,7 @@ button{
 #yesBtn{background:#ff4fa3;color:white}
 #noBtn{background:#eee}
 
-/* FINAL */
+/* FINAL SCREEN */
 #finalScreen{
   position:fixed;
   inset:0;
@@ -197,20 +176,18 @@ button{
 
 <body>
 
-<div class="bgHearts" id="bgHearts"></div>
-
 <!-- START -->
 <div id="startScreen">
   <div class="startBox">
     Hej, bardzo długo nad tym pracowałem.<br>
     Proszę daj temu chwilę.<br><br>
-    Proszę cię po kliknięciu „dalej” poczekaj aż się załaduje,<br>
+    Proszę cię po kliknięciu „dalej” poczekaj aż się załaduje,
     klikaj tak z 2 sekundową przerwą i spokojnie dojdź do końca…<br>
     (będziesz miała licznik 😜)<br><br>
     Jeżeli zapyta Cię o pozwolenie do przejścia w iMessage — kliknij.<br>
     Spokojnie to bezpieczna strona, sam ją pisałem.<br><br>
     I hope u enjoy 😇🥰❤️<br><br>
-    w prawym dolnym rogu masz przycisk muzyki<br>
+    w prawym dolnym rogu masz przycisk muzyki
     (jeżeli sama nie gra)
     <br><br>
     <button id="startBtn">DALEJ</button>
@@ -224,13 +201,11 @@ button{
 
   <p class="sub">
     Wiki, jesteś dla mnie księżniczką i w moich oczach zawsze nią będziesz. <br>
-    Kocham patrzeć na twój uśmiech, uwielbiam jak na mnie patrzysz… <br>
-    Uwielbiam każdą spędzoną z tobą chwilę. <br>
+    Kocham patrzeć na twój uśmiech, uwielbiam jak na mnie patrzysz, <br>
+    uwielbiam każdą spędzoną z tobą chwilę. <br>
     You mean the world to me. <br>
     — Adrian
   </p>
-
-  <div class="note">XXXXX</div>
 
   <div class="photos">
     <div class="photo"><img src="images/1.jpg.JPEG"></div>
@@ -256,17 +231,12 @@ button{
 let yesCount=0;
 let noCount=0;
 
-function vibrate(){
-  if(navigator.vibrate) navigator.vibrate(35);
-}
-
 startBtn.onclick=()=>{
   startScreen.style.display="none";
   mainCard.style.display="block";
 }
 
 yesBtn.onclick=()=>{
-  vibrate();
   yesCount++;
   yesBtn.innerText=`TAK ❤️ (${7-yesCount})`;
 
@@ -279,7 +249,6 @@ yesBtn.onclick=()=>{
 }
 
 noBtn.onclick=()=>{
-  vibrate();
   noCount++;
   noBtn.innerText=`nie (${10-noCount})`;
 
@@ -304,18 +273,6 @@ function spawnFireworks(){
     finalScreen.appendChild(f);
     setTimeout(()=>f.remove(),1200);
   }
-}
-
-/* floating hearts */
-const heartsContainer=document.getElementById("bgHearts");
-for(let i=0;i<18;i++){
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerText="❤️";
-  h.style.left=Math.random()*100+"%";
-  h.style.animationDuration=(6+Math.random()*6)+"s";
-  h.style.fontSize=(14+Math.random()*18)+"px";
-  heartsContainer.appendChild(h);
 }
 </script>
 
