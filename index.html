@@ -31,7 +31,7 @@ body{
   overflow:hidden;
 }
 
-/* START SCREEN */
+/* ---------- START SCREEN ---------- */
 #startScreen{
   position:fixed;
   inset:0;
@@ -60,12 +60,16 @@ body{
   box-shadow:0 8px 18px rgba(0,0,0,.25);
 }
 
-/* MAIN */
+/* ---------- MAIN CARD ---------- */
 .card{
   max-width:520px;
   width:100%;
   text-align:center;
   padding:18px;
+}
+
+.titleWrap{
+  margin-bottom:12px;
 }
 
 #title{
@@ -89,7 +93,13 @@ body{
   display:inline-block;
 }
 
-/* PHOTOS */
+.note{
+  margin-top:6px;
+  font-size:14px;
+  opacity:.9;
+}
+
+/* ---------- PHOTOS ---------- */
 .photos{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -102,6 +112,7 @@ body{
   aspect-ratio:1/1;
   overflow:hidden;
   border-radius:16px;
+  position:relative;
 }
 
 .photo img{
@@ -118,8 +129,10 @@ body{
   100%{transform:translateY(0)}
 }
 
-/* BUTTONS */
-.btnRow{margin-top:12px}
+/* ---------- BUTTONS ---------- */
+.btnRow{
+  margin-top:12px;
+}
 
 button{
   font-size:20px;
@@ -133,7 +146,7 @@ button{
 #yesBtn{background:#ff4fa3;color:white}
 #noBtn{background:#eee}
 
-/* FINAL SCREEN */
+/* ---------- FINAL SCREEN ---------- */
 #finalScreen{
   position:fixed;
   inset:0;
@@ -158,6 +171,7 @@ button{
   text-shadow:0 4px 20px rgba(0,0,0,.6);
 }
 
+/* fireworks */
 .firework{
   position:absolute;
   width:10px;
@@ -181,13 +195,13 @@ button{
   <div class="startBox">
     Hej, bardzo długo nad tym pracowałem.<br>
     Proszę daj temu chwilę.<br><br>
-    Proszę cię po kliknięciu „dalej” poczekaj aż się załaduje,
+    Proszę cię po kliknięciu „dalej” poczekaj aż się załaduje,<br>
     klikaj tak z 2 sekundową przerwą i spokojnie dojdź do końca…<br>
     (będziesz miała licznik 😜)<br><br>
     Jeżeli zapyta Cię o pozwolenie do przejścia w iMessage — kliknij.<br>
     Spokojnie to bezpieczna strona, sam ją pisałem.<br><br>
     I hope u enjoy 😇🥰❤️<br><br>
-    w prawym dolnym rogu masz przycisk muzyki
+    w prawym dolnym rogu masz przycisk muzyki<br>
     (jeżeli sama nie gra)
     <br><br>
     <button id="startBtn">DALEJ</button>
@@ -197,21 +211,25 @@ button{
 <!-- MAIN -->
 <div class="card" id="mainCard" style="display:none">
 
-  <h1 id="title">❤️ Wiki, czy zostaniesz moją walentynką? ❤️</h1>
+  <div class="titleWrap">
+    <h1 id="title">❤️ Wiki, czy zostaniesz moją walentynką? ❤️</h1>
 
-  <p class="sub">
-    Wiki, jesteś dla mnie księżniczką i w moich oczach zawsze nią będziesz. <br>
-    Kocham patrzeć na twój uśmiech, uwielbiam jak na mnie patrzysz, <br>
-    uwielbiam każdą spędzoną z tobą chwilę. <br>
-    You mean the world to me. <br>
-    — Adrian
-  </p>
+    <p class="sub">
+      Wiki, jesteś dla mnie księżniczką i w moich oczach zawsze nią będziesz. <br>
+      Kocham patrzeć na twój uśmiech, uwielbiam jak na mnie patrzysz… <br>
+      Uwielbiam każdą spędzoną z tobą chwilę. <br>
+      You mean the world to me. <br>
+      — Adrian
+    </p>
+
+    <div class="note">XXXXX</div>
+  </div>
 
   <div class="photos">
-    <div class="photo"><img src="images/1.jpg.JPEG"></div>
-    <div class="photo"><img src="images/2.jpg.JPEG"></div>
-    <div class="photo"><img src="images/3.jpg.JPEG"></div>
-    <div class="photo"><img src="images/4.jpg.JPEG"></div>
+    <div class="photo"><img id="img1" src="images/1.jpg.JPEG"></div>
+    <div class="photo"><img id="img2" src="images/2.jpg.JPEG"></div>
+    <div class="photo"><img id="img3" src="images/3.jpg.JPEG"></div>
+    <div class="photo"><img id="img4" src="images/4.jpg.JPEG"></div>
   </div>
 
   <div class="btnRow">
