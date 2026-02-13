@@ -7,17 +7,27 @@
 
   <style>
     :root{
-      --shadow: 0 18px 55px rgba(0,0,0,.18);
       --radius: 22px;
-      --glass: rgba(255, 210, 225, .86);
-      --text: #121212;
-      --muted: rgba(0,0,0,.65);
+
+      /* bardziej różowo */
+      --pink1:#ffb3d1;
+      --pink2:#ff6fae;
+      --pink3:#ff3b8d;
+
+      --text:#140a12;
+      --muted: rgba(20,10,18,.70);
+
       --padTop: max(16px, env(safe-area-inset-top));
       --padBot: max(16px, env(safe-area-inset-bottom));
       --padLR: 14px;
+
+      --shadow: 0 18px 55px rgba(0,0,0,.18);
+      --soft: 0 14px 30px rgba(0,0,0,.14);
     }
+
     *{ box-sizing:border-box; }
     html, body{ height:100%; }
+
     body{
       margin:0;
       min-height:100svh;
@@ -28,20 +38,22 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       text-align:center;
       color:var(--text);
+
+      /* mocniej różowe tło */
       background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.85) 0%, transparent 55%),
-        radial-gradient(1200px 800px at 80% 90%, rgba(255,255,255,.75) 0%, transparent 55%),
-        linear-gradient(135deg, #ffd1dc, #ff9aa2 55%, #ff6f91);
+        radial-gradient(900px 650px at 20% 10%, rgba(255,255,255,.35) 0%, transparent 55%),
+        radial-gradient(900px 650px at 80% 90%, rgba(255,255,255,.28) 0%, transparent 55%),
+        linear-gradient(135deg, var(--pink1), var(--pink2) 55%, var(--pink3));
       overflow:hidden;
     }
 
-    /* floating hearts - visible above overlay too */
+    /* floating hearts - ponad wszystkim */
     .hearts{
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.62;
+      opacity:.65;
       z-index: 99998;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,.14));
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
     }
     .hearts span{
       position:absolute;
@@ -57,85 +69,122 @@
       100%{ transform: translateY(-25svh) translateX(90px) rotate(360deg); opacity:0; }
     }
 
+    /* delikatne różowe “mgły” */
     .blob{
       position:fixed;
-      width: 520px; height: 520px;
+      width: 560px; height: 560px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 60%);
-      filter: blur(10px);
-      opacity:.55;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.32), transparent 62%);
+      filter: blur(12px);
+      opacity:.65;
       z-index:0;
       pointer-events:none;
       animation: blobMove 10s ease-in-out infinite alternate;
     }
-    .blob.b1{ left:-180px; top:-220px; }
-    .blob.b2{ right:-220px; bottom:-240px; animation-duration: 12s; }
+    .blob.b1{ left:-220px; top:-260px; }
+    .blob.b2{ right:-240px; bottom:-260px; animation-duration: 12s; }
     @keyframes blobMove{
       from{ transform: translate(0,0) scale(1); }
-      to{ transform: translate(60px, 30px) scale(1.08); }
+      to{ transform: translate(70px, 40px) scale(1.10); }
     }
 
+    /* KARTA: prawie przezroczysta (bez białego tła) */
     .card{
-      width: min(680px, 92vw);
-      background: var(--glass);
-      border: 1px solid rgba(255,255,255,.55);
+      width: min(720px, 92vw);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.18);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(10px);
       padding: clamp(14px, 3.2vw, 22px);
       position:relative;
       z-index:1;
       overflow:hidden;
     }
+
+    /* lekki różowy glow pod treścią */
     .card:before{
       content:"";
       position:absolute; inset:-2px;
-      background: linear-gradient(135deg, rgba(255,255,255,.55), transparent 45%, rgba(255,255,255,.35));
-      opacity:.7;
+      background:
+        radial-gradient(900px 360px at 50% 0%, rgba(255,255,255,.20), transparent 60%),
+        radial-gradient(900px 420px at 50% 100%, rgba(255,255,255,.12), transparent 60%);
+      opacity:.9;
       pointer-events:none;
       border-radius: inherit;
     }
 
-    h1{
-      margin: 6px 0 8px;
-      font-size: clamp(22px, 5.6vw, 34px);
-      line-height:1.15;
+    /* “paski” pod tekstem żeby się nie zlewał */
+    .textWrap{
       position:relative;
       z-index:1;
-    }
-    .sub{
-      margin: 0 0 12px;
-      font-size: clamp(13px, 3.5vw, 16px);
-      opacity:.92;
-      position:relative;
-      z-index:1;
+      padding: 10px 12px 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--soft);
     }
 
+    h1{
+      margin: 4px 0 8px;
+      font-size: clamp(22px, 5.6vw, 36px);
+      line-height:1.15;
+    }
+    .sub{
+      margin: 0;
+      font-size: clamp(13px, 3.5vw, 16px);
+      color: rgba(20,10,18,.80);
+      font-weight: 650;
+    }
+
+    /* zdjęcia “dryfują” */
     .photos{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
       gap:10px;
-      margin: 12px 0 14px;
+      margin: 14px 0 14px;
       position:relative;
       z-index:1;
     }
-    .photos img{
+
+    .photo{
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.20);
+      box-shadow: 0 16px 32px rgba(0,0,0,.14);
+      backdrop-filter: blur(8px);
+      will-change: transform;
+      animation: drift 5.6s ease-in-out infinite;
+    }
+    .photo:nth-child(2){ animation-duration: 6.4s; animation-delay: .35s; }
+    .photo:nth-child(3){ animation-duration: 7.2s; animation-delay: .7s; }
+
+    @keyframes drift{
+      0%   { transform: translateX(0) translateY(0) rotate(-0.15deg); }
+      25%  { transform: translateX(6px) translateY(-3px) rotate(0.15deg); }
+      50%  { transform: translateX(0) translateY(-6px) rotate(-0.10deg); }
+      75%  { transform: translateX(-6px) translateY(-3px) rotate(0.12deg); }
+      100% { transform: translateX(0) translateY(0) rotate(-0.15deg); }
+    }
+
+    .photo img{
       width:100%;
       aspect-ratio: 4 / 3;
       object-fit: cover;
-      border-radius: 14px;
-      box-shadow: 0 12px 24px rgba(0,0,0,.16);
-      background: rgba(255,255,255,.25);
-      border: 1px solid rgba(255,255,255,.45);
+      display:block;
     }
+
     @media (max-width: 520px){
       .photos{ grid-template-columns: repeat(2, 1fr); }
-      .photos img:nth-child(3){ grid-column: 1 / -1; aspect-ratio: 16/9; }
+      .photos .photo:nth-child(3){ grid-column: 1 / -1; }
+      .photos .photo:nth-child(3) img{ aspect-ratio: 16/9; }
     }
 
     #arena{
       position: relative;
-      margin-top: 8px;
+      margin-top: 10px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -155,7 +204,7 @@
       -webkit-tap-highlight-color: transparent;
       min-width: 136px;
       min-height: 46px;
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      transition: transform .12s ease, filter .12s ease;
       position:relative;
       z-index:1;
     }
@@ -166,9 +215,9 @@
       color:white;
     }
 
-    /* NO runs around */
+    /* NO */
     #no{
-      background: linear-gradient(135deg, #ef4444, #dc2626);
+      background: linear-gradient(135deg, #ff355d, #e11d48);
       color:white;
       position:fixed;
       z-index: 99999;
@@ -181,12 +230,14 @@
     }
 
     #result{
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: clamp(15px, 4vw, 18px);
       font-weight: 900;
       min-height: 26px;
       position:relative;
       z-index:1;
+      color: rgba(20,10,18,.86);
+      text-shadow: 0 10px 24px rgba(0,0,0,.10);
     }
 
     /* overlay */
@@ -198,26 +249,29 @@
       justify-content:center;
       padding: 18px;
       z-index: 5;
-      background: radial-gradient(800px 500px at 30% 20%, rgba(255,255,255,.65), rgba(255,255,255,.22) 55%, rgba(255,255,255,.06));
-      backdrop-filter: blur(12px);
+      background: radial-gradient(800px 500px at 30% 20%, rgba(255,255,255,.30), rgba(255,255,255,.10) 55%, rgba(255,255,255,.04));
+      backdrop-filter: blur(10px);
     }
     .overlay.on{ display:flex; }
+
     .panel{
       width:min(560px, 92%);
-      background: rgba(255,255,255,.68);
-      border: 1px solid rgba(255,255,255,.75);
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.25);
       border-radius: 20px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.18);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
       padding: 16px 16px 14px;
     }
     .panel h2{
       margin: 4px 0 8px;
       font-size: clamp(20px, 5vw, 28px);
+      color: rgba(20,10,18,.92);
     }
     .panel p{
       margin: 0 0 12px;
-      color: var(--muted);
-      font-weight: 650;
+      color: rgba(20,10,18,.72);
+      font-weight: 700;
     }
     .panel .row{
       display:flex;
@@ -227,10 +281,27 @@
       margin-top: 10px;
     }
     .panel .ghost{
-      background: rgba(255,255,255,.65);
-      border: 1px solid rgba(0,0,0,.07);
-      color:#111;
+      background: rgba(255,255,255,.20);
+      border: 1px solid rgba(255,255,255,.28);
+      color:#140a12;
       box-shadow: 0 12px 22px rgba(0,0,0,.12);
+    }
+
+    /* mały przycisk muzyki */
+    #musicBtn{
+      position:fixed;
+      right: 12px;
+      bottom: calc(var(--padBot) + 10px);
+      z-index: 99997;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.25);
+      color: rgba(20,10,18,.92);
+      box-shadow: 0 14px 26px rgba(0,0,0,.14);
+      backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      min-width: auto;
+      min-height: auto;
+      font-weight: 900;
     }
   </style>
 </head>
@@ -242,13 +313,15 @@
   <div class="hearts" id="hearts"></div>
 
   <div class="card">
-    <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
-    <p class="sub" id="subtitle">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
+    <div class="textWrap">
+      <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
+      <p class="sub" id="subtitle">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
+    </div>
 
     <div class="photos">
-      <img src="images/1.jpg" alt="photo 1">
-      <img src="images/2.jpg" alt="photo 2">
-      <img src="images/3.jpg" alt="photo 3">
+      <div class="photo"><img src="images/1.jpg" alt="photo 1"></div>
+      <div class="photo"><img src="images/2.jpg" alt="photo 2"></div>
+      <div class="photo"><img src="images/3.jpg" alt="photo 3"></div>
     </div>
 
     <div id="arena">
@@ -271,11 +344,20 @@
 
   <button id="no">NIE 😈</button>
 
+  <!-- muzyka w tle -->
+  <audio id="bgm" preload="auto" loop playsinline>
+    <!-- Jeśli zmienisz nazwę pliku, zmień też AUDIO_SRC w JS -->
+    <source src="MORAD%20-%20LAMINE.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="musicBtn" aria-label="Muzyka">🔊 Muzyka</button>
+
   <script>
     // ========= SETTINGS =========
     const MY_PHONE_E164 = "+48690980775";
-    const KEY = "valentine_answer_v9";
+    const KEY = "valentine_answer_v10";
     const needed = 5;
+    const AUDIO_SRC = "MORAD%20-%20LAMINE.mp3"; // jeśli zmienisz nazwę, zmień tu
 
     // ========= UTIL =========
     const $ = (id) => document.getElementById(id);
@@ -288,7 +370,7 @@
     }
     function nowStamp(){ return new Date().toLocaleString("pl-PL"); }
 
-    // ========= AUDIO (stable on mobile) =========
+    // ========= AUDIO (pop + mp3) =========
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -301,7 +383,6 @@
       }catch(e){ return null; }
     }
 
-    // "pop up up" (3 little rising pops)
     function popUpUp(){
       const ctx = ensureAudio();
       if(!ctx) return;
@@ -323,8 +404,47 @@
       });
     }
 
-    // unlock audio on first user gesture
-    window.addEventListener("pointerdown", () => ensureAudio(), { once:true });
+    const bgm = $("bgm");
+    const musicBtn = $("musicBtn");
+    let musicOn = false;
+
+    // upewnij się, że source jest ustawiony (na wypadek zmian)
+    (function initBgm(){
+      try{
+        const source = bgm.querySelector("source");
+        if(source) source.src = AUDIO_SRC;
+        bgm.load();
+      }catch(e){}
+    })();
+
+    async function startMusic(){
+      try{
+        ensureAudio(); // odblokuj audio na iOS
+        bgm.muted = false;
+        bgm.volume = 0.35;
+        await bgm.play();
+        musicOn = true;
+        musicBtn.textContent = "🔇 Muzyka";
+      }catch(e){
+        // autoplay może zostać zablokowane — wtedy tylko przycisk
+        musicOn = false;
+        musicBtn.textContent = "🔊 Muzyka";
+      }
+    }
+
+    function stopMusic(){
+      try{ bgm.pause(); }catch(e){}
+      musicOn = false;
+      musicBtn.textContent = "🔊 Muzyka";
+    }
+
+    musicBtn.addEventListener("click", () => {
+      if(musicOn) stopMusic();
+      else startMusic();
+    });
+
+    // spróbuj odpalić muzykę automatycznie (czasem działa na Android/desktop)
+    setTimeout(() => startMusic(), 300);
 
     // ========= HEARTS =========
     const heartsBox = $("hearts");
@@ -371,11 +491,10 @@
       try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; }
     }
 
-    // ========= SMS / iMessage (iOS & Android) =========
+    // ========= SMS / iMessage =========
     function isIOS(){
       return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     }
-
     function openMessageApp(ans){
       const text = `Odpowiedź: ${ans} 💘 (czas: ${nowStamp()})`;
       const body = encodeURIComponent(text);
@@ -384,14 +503,13 @@
       setTimeout(() => { window.location.href = url; }, 60);
     }
 
-    // ========= NO movement: ESCAPES ONLY AFTER CLICK =========
+    // ========= NO: ucieka dopiero po kliknięciu =========
     let noClicks = 0;
-    no.textContent = "NIE 😈"; // no counter until first click
+    no.textContent = "NIE 😈";
 
     function intersects(ax, ay, aw, ah, bx, by, bw, bh){
       return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
     }
-
     function getSafeBounds(){
       const safe = 12;
       const padTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--padTop")) || 16;
@@ -432,18 +550,19 @@
       no.style.transform = "translate(0,0)";
     }
 
-    // ONLY on click: update counter + run away
-    no.addEventListener("click", (e) => {
+    no.addEventListener("click", async (e) => {
       e.preventDefault();
       ensureAudio();
       popUpUp();
+      // na iPhone autoplay często blokuje — klik odblokowuje
+      if(!musicOn) { try { await startMusic(); } catch(_){} }
 
       noClicks++;
       const left = needed - noClicks;
 
       if(left > 0){
         no.textContent = `NIE 😈 (${left})`;
-        moveNoAvoidYes(); // ucieka dopiero po kliknięciu
+        moveNoAvoidYes();
         result.textContent = "";
       } else {
         const ans = "NIE 😈";
@@ -455,9 +574,11 @@
     });
 
     // ========= YES =========
-    yes.addEventListener("click", () => {
+    yes.addEventListener("click", async () => {
       ensureAudio();
       popUpUp();
+      if(!musicOn) { try { await startMusic(); } catch(_){} }
+
       const ans = "TAK 💖";
       setLocalAnswer(ans);
       result.textContent = "YAY! 💘 Widzimy się na Walentynki 😄";
@@ -473,16 +594,17 @@
       overlay.classList.add("on");
     }
 
-    sendAgain.addEventListener("click", () => {
+    sendAgain.addEventListener("click", async () => {
       ensureAudio();
       popUpUp();
+      if(!musicOn) { try { await startMusic(); } catch(_){} }
+
       const saved = getLocalAnswer();
       openMessageApp(saved?.answer || "TAK 💖");
     });
-
     closeOverlay.addEventListener("click", () => overlay.classList.remove("on"));
 
-    // Start: set initial random position (no escape yet)
+    // Start
     moveNoAvoidYes();
     window.addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 300));
   </script>
