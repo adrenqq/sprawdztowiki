@@ -1,626 +1,549 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Czy zostaniesz moją Walentynką? 💘</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Czy zostaniesz moją Walentynką? 💘</title>
 
-  <style>
-    :root{
-      --pink1:#ffb3d1; --pink2:#ff6fae; --pink3:#ff3b8d;
-      --text:#140a12;
-      --padTop: max(16px, env(safe-area-inset-top));
-      --padBot: max(16px, env(safe-area-inset-bottom));
-      --padLR: 14px;
-      --softShadow: 0 14px 30px rgba(0,0,0,.14);
-    }
+<style>
+  :root{
+    --pink1:#ffb3d1;
+    --pink2:#ff8fc1;
+    --pink3:#ff6fb3;
+    --text:#4a0033;
+    --shadow: 0 20px 50px rgba(0,0,0,.20);
+  }
 
-    *{ box-sizing:border-box; }
-    html, body{ height:100%; }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
 
-    body{
-      margin:0;
-      min-height:100svh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: var(--padTop) var(--padLR) var(--padBot);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      text-align:center;
-      color:var(--text);
-      background:
-        radial-gradient(900px 650px at 20% 10%, rgba(255,255,255,.35) 0%, transparent 55%),
-        radial-gradient(900px 650px at 80% 90%, rgba(255,255,255,.28) 0%, transparent 55%),
-        linear-gradient(135deg, var(--pink1), var(--pink2) 55%, var(--pink3));
-      overflow:hidden;
-    }
+  body{
+    margin:0;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 650px at 20% 10%, rgba(255,255,255,.35) 0%, transparent 55%),
+      radial-gradient(900px 650px at 80% 90%, rgba(255,255,255,.28) 0%, transparent 55%),
+      linear-gradient(135deg,var(--pink1),var(--pink2),var(--pink3));
+    overflow:hidden;
+    text-align:center;
+  }
 
-    /* soft blobs */
-    .blob{
-      position:fixed;
-      width: 560px; height: 560px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.30), transparent 62%);
-      filter: blur(12px);
-      opacity:.65;
-      z-index:0;
-      pointer-events:none;
-      animation: blobMove 10s ease-in-out infinite alternate;
-    }
-    .blob.b1{ left:-220px; top:-260px; }
-    .blob.b2{ right:-240px; bottom:-260px; animation-duration: 12s; }
-    @keyframes blobMove{
-      from{ transform: translate(0,0) scale(1); }
-      to{ transform: translate(70px, 40px) scale(1.10); }
-    }
+  /* hearts above all */
+  .hearts{
+    position:fixed; inset:0;
+    pointer-events:none;
+    opacity:.62;
+    z-index: 99998;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
+  }
+  .hearts span{
+    position:absolute;
+    transform: translateY(110svh);
+    animation: floatUp linear infinite;
+    will-change: transform, opacity;
+    user-select:none;
+  }
+  @keyframes floatUp{
+    0%{ transform: translateY(110svh) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:1; }
+    90%{ opacity:1; }
+    100%{ transform: translateY(-25svh) translateX(90px) rotate(360deg); opacity:0; }
+  }
 
-    /* hearts above all */
-    .hearts{
-      position:fixed; inset:0;
-      pointer-events:none;
-      opacity:.62;
-      z-index: 99998;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
-    }
-    .hearts span{
-      position:absolute;
-      transform: translateY(110svh);
-      animation: floatUp linear infinite;
-      will-change: transform, opacity;
-      user-select:none;
-    }
-    @keyframes floatUp{
-      0%{ transform: translateY(110svh) translateX(0) rotate(0deg); opacity:0; }
-      10%{ opacity:1; }
-      90%{ opacity:1; }
-      100%{ transform: translateY(-25svh) translateX(90px) rotate(360deg); opacity:0; }
-    }
+  .card{
+    width:min(460px, 92vw);
+    background:rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.22);
+    backdrop-filter: blur(14px);
+    border-radius:26px;
+    padding:18px;
+    box-shadow: var(--shadow);
+    position:relative;
+    z-index:1;
+  }
 
-    .card{
-      width: min(720px, 94vw);
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-      position:relative;
-      z-index:1;
-    }
+  h1{ margin:6px 0 10px; font-size: clamp(22px, 5.6vw, 30px); line-height:1.15; }
+  .sub{ margin:0 0 10px; font-size: 14px; font-weight: 700; opacity:.9; }
 
-    .frost{
-      display:inline-block;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.22);
-      backdrop-filter: blur(14px);
-      box-shadow: var(--softShadow);
-    }
+  .note{
+    font-size:14px;
+    font-weight:800;
+    opacity:.92;
+    padding:10px 12px;
+    border-radius:16px;
+    background: rgba(255,255,255,.10);
+    border: 1px dashed rgba(255,255,255,.26);
+    margin: 10px 0 12px;
+  }
 
-    .floatWrap{
-      display:inline-block;
-      animation: titleDrift 6.6s ease-in-out infinite;
-      will-change: transform;
-    }
-    @keyframes titleDrift{
-      0%   { transform: translateX(0) translateY(0) rotate(-0.10deg); }
-      25%  { transform: translateX(5px) translateY(-3px) rotate(0.10deg); }
-      50%  { transform: translateX(0) translateY(-6px) rotate(-0.08deg); }
-      75%  { transform: translateX(-5px) translateY(-3px) rotate(0.08deg); }
-      100% { transform: translateX(0) translateY(0) rotate(-0.10deg); }
-    }
+  /* PHOTOS */
+  .photos{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:12px 0 12px;
+  }
 
-    h1{ margin: 4px 0 8px; font-size: clamp(22px, 5.6vw, 34px); line-height:1.15; }
-    .sub{ margin:0; font-size: clamp(13px, 3.5vw, 16px); color: rgba(20,10,18,.82); font-weight:650; }
+  .photo{
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 12px 26px rgba(0,0,0,.22);
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.18);
+    position:relative;
+    animation: floaty 6s ease-in-out infinite;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  .photo:nth-child(2){ animation-delay:.7s; animation-duration: 7s; }
+  .photo:nth-child(3){ animation-delay:1.4s; animation-duration: 7.6s; }
+  .photo:nth-child(4){ animation-delay:2.1s; animation-duration: 8.2s; }
 
-    .note{
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.10);
-      border: 1px dashed rgba(255,255,255,.28);
-      color: rgba(20,10,18,.82);
-      font-weight: 750;
-      box-shadow: 0 12px 24px rgba(0,0,0,.10);
-      backdrop-filter: blur(10px);
-    }
+  @keyframes floaty{
+    0%,100%{ transform:translateY(0) rotate(-0.7deg); }
+    50%{ transform:translateY(-10px) rotate(0.7deg); }
+  }
 
-    /* photos: stable 2x2 */
-    .photos{
-      width: min(720px, 94vw);
-      margin: 14px auto 12px;
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
+  .photo img{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    display:block;
+    user-select:none;
+    -webkit-user-drag:none;
+    transform: scale(1.01);
+    opacity:1;
+    transition: opacity 220ms ease, transform 220ms ease;
+    will-change: opacity, transform;
+  }
 
-    /* FORCE drift on every tile + clickable */
-    .photo{
-      border-radius: 16px;
-      overflow:hidden;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.20);
-      box-shadow: 0 16px 32px rgba(0,0,0,.14);
-      backdrop-filter: blur(8px);
-      will-change: transform;
-      animation-name: drift;
-      animation-timing-function: ease-in-out;
-      animation-iteration-count: infinite;
-      animation-duration: 6.4s;
-      cursor: pointer;
-      position: relative;
-      transform-style: preserve-3d;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .photo:nth-child(2){ animation-duration: 7.1s; animation-delay: .25s; }
-    .photo:nth-child(3){ animation-duration: 7.7s; animation-delay: .5s; }
-    .photo:nth-child(4){ animation-duration: 8.2s; animation-delay: .15s; }
+  .photo.swap img{
+    opacity:0;
+    transform: scale(1.03);
+  }
 
-    .photo img{
-      width:100%;
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
-      display:block;
-      transform: scale(1.01);
-      transition: transform .35s ease, filter .35s ease;
-      backface-visibility: hidden;
-      user-select:none;
-      -webkit-user-drag:none;
-    }
+  /* BUTTONS */
+  #arena{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin-top:8px;
+    position:relative;
+    z-index:2;
+  }
 
-    @keyframes drift{
-      0%   { transform: translateX(0) translateY(0) rotate(-0.12deg); }
-      25%  { transform: translateX(6px) translateY(-3px) rotate(0.12deg); }
-      50%  { transform: translateX(0) translateY(-6px) rotate(-0.08deg); }
-      75%  { transform: translateX(-6px) translateY(-3px) rotate(0.10deg); }
-      100% { transform: translateX(0) translateY(0) rotate(-0.12deg); }
-    }
+  button{
+    border:none;
+    border-radius:999px;
+    padding:14px 22px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 12px 22px rgba(0,0,0,.22);
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  button:active{ transform: scale(.98); }
 
-    .photo:active img{ transform: scale(1.04); }
+  #yes{ background: linear-gradient(135deg,#22c55e,#16a34a); color:#fff; }
 
-    /* swap animation class */
-    .photo.swap{
-      animation: drift 6.4s ease-in-out infinite, flipPop 520ms ease-out 1;
-    }
-    @keyframes flipPop{
-      0%   { transform: translateX(0) translateY(0) rotate(-0.12deg) scale(1); }
-      40%  { transform: translateX(0) translateY(-6px) rotate(0.12deg) scale(1.03); }
-      100% { transform: translateX(0) translateY(0) rotate(-0.12deg) scale(1); }
-    }
+  #no{
+    background: linear-gradient(135deg,#ff355d,#e11d48);
+    color:#fff;
+    position:fixed;
+    z-index: 99999;
+    left: 70%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    transition: left .20s ease, top .20s ease, transform .20s ease;
+    will-change: left, top, transform;
+  }
 
-    /* shine overlay */
-    .photo::after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%);
-      transform: translateX(-120%) rotate(10deg);
-      opacity:0;
-      pointer-events:none;
-    }
-    .photo.swap::after{
-      opacity:1;
-      animation: shine 520ms ease-out 1;
-    }
-    @keyframes shine{
-      0%{ transform: translateX(-120%) rotate(10deg); }
-      100%{ transform: translateX(120%) rotate(10deg); }
-    }
+  #result{
+    margin-top:10px;
+    font-weight:900;
+    min-height:22px;
+  }
 
-    /* buttons */
-    #arena{
-      margin-top: 12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 14px;
-      position:relative;
-      z-index:2;
-    }
-    button{
-      border:none;
-      border-radius: 999px;
-      padding: 14px 22px;
-      font-size: clamp(15px, 4vw, 17px);
-      font-weight: 900;
-      cursor:pointer;
-      box-shadow: 0 14px 26px rgba(0,0,0,.18);
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      min-width: 136px;
-      min-height: 46px;
-      transition: transform .12s ease;
-      touch-action: manipulation;
-    }
-    button:active{ transform: scale(.98); }
+  /* music button */
+  #musicBtn{
+    position:fixed;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 99997;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.25);
+    color: rgba(20,10,18,.92);
+    box-shadow: 0 14px 26px rgba(0,0,0,.14);
+    backdrop-filter: blur(12px);
+    padding: 10px 14px;
+    font-weight: 900;
+  }
 
-    #yes{ background: linear-gradient(135deg, #22c55e, #16a34a); color:#fff; }
-
-    #no{
-      background: linear-gradient(135deg, #ff355d, #e11d48);
-      color:#fff;
-      position:fixed;
-      z-index: 99999;
-      left: 70%;
-      top: 60%;
-      transform: translate(-50%, -50%);
-      transition: left .22s ease, top .22s ease, transform .22s ease;
-      will-change: left, top, transform;
-    }
-
-    /* music button */
-    #musicBtn{
-      position:fixed;
-      right: 12px;
-      bottom: calc(var(--padBot) + 10px);
-      z-index: 99997;
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.25);
-      color: rgba(20,10,18,.92);
-      box-shadow: 0 14px 26px rgba(0,0,0,.14);
-      backdrop-filter: blur(12px);
-      padding: 10px 14px;
-      min-width: auto;
-      min-height: auto;
-      font-weight: 900;
-    }
-
-    /* sparkles */
-    .spark{
-      position:fixed;
-      z-index: 100000;
-      pointer-events:none;
-      font-size: 18px;
-      animation: spark 700ms ease-out forwards;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.18));
-      will-change: transform, opacity;
-    }
-    @keyframes spark{
-      0%   { transform: translate(-50%, -50%) scale(.8); opacity:0; }
-      15%  { opacity:1; }
-      100% { transform: translate(-50%, -70px) scale(1.3) rotate(18deg); opacity:0; }
-    }
-  </style>
+  /* sparkles */
+  .spark{
+    position:fixed;
+    z-index: 100000;
+    pointer-events:none;
+    font-size: 18px;
+    animation: spark 650ms ease-out forwards;
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.18));
+    will-change: transform, opacity;
+  }
+  @keyframes spark{
+    0%   { transform: translate(-50%, -50%) scale(.8); opacity:0; }
+    15%  { opacity:1; }
+    100% { transform: translate(-50%, -70px) scale(1.25) rotate(16deg); opacity:0; }
+  }
+</style>
 </head>
 
 <body>
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
   <div class="hearts" id="hearts"></div>
 
   <div class="card">
-    <div class="frost floatWrap">
-      <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
-      <p class="sub">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
+    <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
+    <p class="sub">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
 
-      <!-- XXXXX: tutaj wpisz swoją wiadomość -->
-      <div class="note">XXXXX</div>
-    </div>
+    <!-- XXXXX: tutaj wpisz swoją wiadomość -->
+    <div class="note">XXXXX</div>
 
-    <div class="photos" id="photos">
-      <div class="photo" data-slot="1"><img id="img1" src="images/1.jpg.JPEG" alt="photo 1"></div>
-      <div class="photo" data-slot="2"><img id="img2" src="images/2.jpg.JPEG" alt="photo 2"></div>
-      <div class="photo" data-slot="3"><img id="img3" src="images/3.jpg.JPEG" alt="photo 3"></div>
-      <div class="photo" data-slot="4"><img id="img4" src="images/4.jpg.JPEG" alt="photo 4"></div>
+    <div class="photos">
+      <div class="photo" data-slot="1"><img id="img1" src="images/1.jpg.JPEG" alt="1"></div>
+      <div class="photo" data-slot="2"><img id="img2" src="images/2.jpg.JPEG" alt="2"></div>
+      <div class="photo" data-slot="3"><img id="img3" src="images/3.jpg.JPEG" alt="3"></div>
+      <div class="photo" data-slot="4"><img id="img4" src="images/4.jpg.JPEG" alt="4"></div>
     </div>
 
     <div id="arena">
-      <button id="yes">TAK 💖</button>
+      <button id="yes">TAK 💖 (7)</button>
     </div>
+
+    <div id="result"></div>
   </div>
 
   <button id="no">NIE 😈</button>
 
-  <!-- muzyka (plik w ROOT repo) -->
   <audio id="bgm" preload="auto" loop playsinline>
     <source src="MORAD%20-%20LAMINE%20(mp3cut.net).mp3" type="audio/mpeg">
   </audio>
   <button id="musicBtn">🔊 Muzyka</button>
 
-  <script>
-    // ====== settings ======
-    const MY_PHONE_E164 = "+48690980775";
-    const needed = 10;
+<script>
+  // ====== settings ======
+  const MY_PHONE_E164 = "+48690980775";
 
-    const NO_LINES = [
-      "na pewno?",
-      "Może jednak?",
-      "Jeden wieczór?",
-      "Ej…..",
-      "poważnie?",
-      "kocham cię.",
-      "OK, negocjacje: Ty TAK, ja deser. Deal? 🍰",
-      "Zgubiłem argumenty… zostało mi tylko: pls 😭",
-      "Ostatnie 3% baterii i 97% uczuć 🥺",
-      "Dobra, to już nie NIE, tylko ‘BOJĘ SIĘ SZCZĘŚCIA’ 😈"
-    ];
+  // "NIE" = 10 kliknięć (ucieka po kliknięciu)
+  const NO_TOTAL = 10;
 
-    const $ = (id) => document.getElementById(id);
+  // "TAK" = 7 kliknięć (tyle kroków zmiany zdjęć)
+  const YES_TOTAL = 7;
 
-    function getNameFromUrl(){
-      const p = new URLSearchParams(location.search);
-      const raw = (p.get("name") || "").trim();
-      const safe = raw.replace(/[<>]/g, "").slice(0, 24);
-      return safe || "Wiktoria";
-    }
+  const NO_LINES = [
+    "na pewno?",
+    "Może jednak?",
+    "Jeden wieczór?",
+    "Ej…..",
+    "poważnie?",
+    "kocham cię.",
+    "OK, negocjacje: Ty TAK, ja deser. Deal? 🍰",
+    "Zgubiłem argumenty… zostało mi tylko: pls 😭",
+    "Ostatnie 3% baterii i 97% uczuć 🥺",
+    "Dobra, to już nie NIE, tylko ‘BOJĘ SIĘ SZCZĘŚCIA’ 😈"
+  ];
 
-    // ====== sparkles ======
-    function sparkleAt(x, y){
-      const chars = ["✨","💖","💘","🌟","💞"];
-      const s = document.createElement("div");
-      s.className = "spark";
-      s.textContent = chars[Math.floor(Math.random()*chars.length)];
-      s.style.left = x + "px";
-      s.style.top  = y + "px";
-      s.style.fontSize = (16 + Math.random()*10) + "px";
-      document.body.appendChild(s);
-      setTimeout(()=>s.remove(), 800);
-    }
+  const $ = (id) => document.getElementById(id);
 
-    // ====== small click sound ======
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-    function ensureAudio(){
-      try{
-        if(!AudioCtx) return null;
-        if(!audioCtx) audioCtx = new AudioCtx();
-        if(audioCtx.state === "suspended") audioCtx.resume();
-        return audioCtx;
-      }catch(e){ return null; }
-    }
-    function pop(){
-      const ctx = ensureAudio();
-      if(!ctx) return;
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = "triangle";
-      o.frequency.value = 520;
-      g.gain.value = 0.0001;
-      g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
-      o.connect(g); g.connect(ctx.destination);
-      o.start();
-      o.stop(ctx.currentTime + 0.09);
-    }
+  // ====== name param ======
+  function getNameFromUrl(){
+    const p = new URLSearchParams(location.search);
+    const raw = (p.get("name") || "").trim();
+    const safe = raw.replace(/[<>]/g, "").slice(0, 24);
+    return safe || "Wiktoria";
+  }
+  $("title").textContent = `💘 Czy zostaniesz moją Walentynką ${getNameFromUrl()}? 💘`;
 
-    // ====== music ======
-    const bgm = $("bgm");
-    const musicBtn = $("musicBtn");
-    let musicOn = false;
+  // ====== sparkles ======
+  function sparkleAt(x, y){
+    const chars = ["✨","💖","💘","🌟","💞"];
+    const s = document.createElement("div");
+    s.className = "spark";
+    s.textContent = chars[Math.floor(Math.random()*chars.length)];
+    s.style.left = x + "px";
+    s.style.top  = y + "px";
+    s.style.fontSize = (16 + Math.random()*10) + "px";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 700);
+  }
 
-    async function startMusic(){
-      try{
-        ensureAudio();
-        bgm.volume = 0.35;
-        await bgm.play();
-        musicOn = true;
-        musicBtn.textContent = "🔇 Muzyka";
-      }catch(e){
-        musicOn = false;
-        musicBtn.textContent = "🔊 Muzyka";
-      }
-    }
-    function stopMusic(){
-      try{ bgm.pause(); }catch(e){}
+  // ====== tiny pop sound ======
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+  function ensureAudio(){
+    try{
+      if(!AudioCtx) return null;
+      if(!audioCtx) audioCtx = new AudioCtx();
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      return audioCtx;
+    }catch(e){ return null; }
+  }
+  function pop(){
+    const ctx = ensureAudio();
+    if(!ctx) return;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "triangle";
+    o.frequency.value = 520;
+    g.gain.value = 0.0001;
+    g.gain.exponentialRampToValueAtTime(0.20, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime + 0.09);
+  }
+
+  // ====== music ======
+  const bgm = $("bgm");
+  const musicBtn = $("musicBtn");
+  let musicOn = false;
+
+  async function startMusic(){
+    try{
+      ensureAudio();
+      bgm.volume = 0.35;
+      await bgm.play();
+      musicOn = true;
+      musicBtn.textContent = "🔇 Muzyka";
+    }catch(e){
       musicOn = false;
       musicBtn.textContent = "🔊 Muzyka";
     }
-    musicBtn.addEventListener("click", () => musicOn ? stopMusic() : startMusic());
-    setTimeout(()=>startMusic(), 250); // try autoplay
+  }
+  function stopMusic(){
+    try{ bgm.pause(); }catch(e){}
+    musicOn = false;
+    musicBtn.textContent = "🔊 Muzyka";
+  }
+  musicBtn.addEventListener("click", () => musicOn ? stopMusic() : startMusic());
+  setTimeout(()=>startMusic(), 250); // try autoplay
 
-    // ====== title ======
-    $("title").textContent = `💘 Czy zostaniesz moją Walentynką ${getNameFromUrl()}? 💘`;
+  // ====== hearts ======
+  const heartsBox = $("hearts");
+  const heartChars = ["💗","💖","💘","💕","💞","❤️‍🔥","💝"];
+  function spawnHeart(){
+    const s = document.createElement("span");
+    s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+    const left = Math.random()*100;
+    const size = 14 + Math.random()*20;
+    const dur = 6 + Math.random()*7;
+    const delay = Math.random()*2;
+    s.style.left = left + "vw";
+    s.style.fontSize = size + "px";
+    s.style.animationDuration = dur + "s";
+    s.style.animationDelay = delay + "s";
+    heartsBox.appendChild(s);
+    setTimeout(() => s.remove(), (dur + delay) * 1000 + 250);
+  }
+  for(let i=0;i<18;i++) spawnHeart();
+  setInterval(spawnHeart, 420);
 
-    // ====== hearts ======
-    const heartsBox = $("hearts");
-    const heartChars = ["💗","💖","💘","💕","💞","❤️‍🔥","💝"];
-    function spawnHeart(){
-      const s = document.createElement("span");
-      s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
-      const left = Math.random()*100;
-      const size = 14 + Math.random()*20;
-      const dur = 6 + Math.random()*7;
-      const delay = Math.random()*2;
-      s.style.left = left + "vw";
-      s.style.fontSize = size + "px";
-      s.style.animationDuration = dur + "s";
-      s.style.animationDelay = delay + "s";
-      heartsBox.appendChild(s);
-      setTimeout(() => s.remove(), (dur + delay) * 1000 + 250);
-    }
-    for(let i=0;i<18;i++) spawnHeart();
-    setInterval(spawnHeart, 420);
+  // ====== sms ======
+  function isIOS(){
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+  function openMessageApp(ans){
+    const stamp = new Date().toLocaleString("pl-PL");
+    const text = `Odpowiedź: ${ans} 💘 (czas: ${stamp})`;
+    const body = encodeURIComponent(text);
+    const sep = isIOS() ? "&" : "?";
+    location.href = `sms:${MY_PHONE_E164}${sep}body=${body}`;
+  }
 
-    // ====== sms ======
-    function isIOS(){
-      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    }
-    function openMessageApp(ans){
-      const stamp = new Date().toLocaleString("pl-PL");
-      const text = `Odpowiedź: ${ans} 💘 (czas: ${stamp})`;
-      const body = encodeURIComponent(text);
-      const sep = isIOS() ? "&" : "?";
-      location.href = `sms:${MY_PHONE_E164}${sep}body=${body}`;
-    }
+  // ====== photo swap config (Twoje nazwy plików) ======
+  const photoSets = {
+    1: ["images/1.jpg.JPEG", "images/1_2.jpeg.JPEG", "images/1_3.jpg.JPEG"],
+    2: ["images/2.jpg.JPEG", "images/2_2.jpg.JPEG", "images/2_3.jpg.JPEG"],
+    3: ["images/3.jpg.JPEG", "images/3_2.jpg.JPEG", "images/3_3.jpg.JPEG"],
+    4: ["images/4.jpg.JPEG", "images/4_2.jpg.JPEG"]
+  };
+  const photoIndex = {1:0,2:0,3:0,4:0};
 
-    // ====== NO logic ======
-    const yes = $("yes");
-    const no = $("no");
-    let noClicks = 0;
+  // Zmiana zdjęć po kolei: 4 -> 3 -> 2 -> 1 -> 4 -> ...
+  const clickOrder = [4,3,2,1];
+  let orderIdx = 0;
 
-    function intersects(ax, ay, aw, ah, bx, by, bw, bh){
-      return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
-    }
-    function getSafeBounds(){
-      const safe = 12;
-      const padTop = 16;
-      const padBot = 16;
-      return {
-        left: safe,
-        right: innerWidth - safe,
-        top: padTop + safe,
-        bottom: innerHeight - padBot - safe
-      };
-    }
-    function moveNoAvoidYes(){
-      const bounds = getSafeBounds();
-      const btn = no.getBoundingClientRect();
-      const yesRect = yes.getBoundingClientRect();
-      const safeGap = 42;
+  function swapOne(slot){
+    const tile = document.querySelector(`.photo[data-slot="${slot}"]`);
+    const img  = document.getElementById(`img${slot}`);
+    if(!tile || !img) return;
 
-      const maxX = Math.max(1, bounds.right - bounds.left - btn.width);
-      const maxY = Math.max(1, bounds.bottom - bounds.top - btn.height);
+    const list = photoSets[slot] || [];
+    if(list.length < 2) return;
 
-      let x, y, tries = 0;
-      do{
-        x = bounds.left + Math.random() * maxX;
-        y = bounds.top + Math.random() * maxY;
-        tries++;
-        if(tries > 220) break;
-      } while(
-        intersects(
-          x, y, btn.width, btn.height,
-          yesRect.left - safeGap, yesRect.top - safeGap,
-          yesRect.width + safeGap*2, yesRect.height + safeGap*2
-        )
-      );
+    const nextIndex = (photoIndex[slot] + 1) % list.length;
+    const nextSrc = list[nextIndex];
 
-      no.style.left = x + "px";
-      no.style.top  = y + "px";
-      no.style.transform = "translate(0,0)";
-    }
-
-    function setNoLabel(step){
-      const left = needed - step;
-      const phrase = NO_LINES[step-1] || "serio?";
-      no.textContent = `${phrase} 😈 (${left})`;
-    }
-
-    moveNoAvoidYes();
-
-    let lastFire = 0;
-    function fireOnce(fn){
-      const now = Date.now();
-      if(now - lastFire < 250) return;
-      lastFire = now;
-      fn();
-    }
-
-    function handleNo(e){
-      fireOnce(async () => {
-        const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
-        const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
-        sparkleAt(x, y);
-        pop();
-        if(!musicOn) { try { await startMusic(); } catch(_){} }
-
-        noClicks++;
-        if(noClicks < needed){
-          setNoLabel(noClicks);
-          moveNoAvoidYes();
-        } else {
-          no.style.display = "none";
-          openMessageApp("NIE 😈");
-        }
-      });
-    }
-
-    no.addEventListener("pointerdown", (e)=>{ e.preventDefault(); e.stopPropagation(); handleNo(e); }, {passive:false});
-    no.addEventListener("touchend", (e)=>{ e.preventDefault(); e.stopPropagation(); handleNo(e); }, {passive:false});
-    no.addEventListener("click", (e)=>{ e.preventDefault(); e.stopPropagation(); handleNo(e); });
-
-    function handleYes(e){
-      fireOnce(async () => {
-        const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
-        const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
-        for(let i=0;i<5;i++){
-          setTimeout(()=>sparkleAt(x + (Math.random()*60-30), y + (Math.random()*40-20)), i*45);
-        }
-        pop();
-        if(!musicOn) { try { await startMusic(); } catch(_){} }
-        openMessageApp("TAK 💖");
-      });
-    }
-
-    yes.addEventListener("pointerdown", (e)=>{ e.preventDefault(); handleYes(e); }, {passive:false});
-    yes.addEventListener("click", (e)=>{ e.preventDefault(); handleYes(e); });
-
-    addEventListener("resize", () => setTimeout(moveNoAvoidYes, 120));
-    addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 250));
-
-    // ====== PHOTO SWAP (4 -> 3 -> 2 -> 1) ======
-    // Dopasowane 1:1 do Twoich nazw plików:
-    const photoSets = {
-      1: ["images/1.jpg.JPEG", "images/1_2.jpeg.JPEG", "images/1_3.jpg.JPEG"],
-      2: ["images/2.jpg.JPEG", "images/2_2.jpg.JPEG", "images/2_3.jpg.JPEG"],
-      3: ["images/3.jpg.JPEG", "images/3_2.jpg.JPEG", "images/3_3.jpg.JPEG"],
-      4: ["images/4.jpg.JPEG", "images/4_2.jpg.JPEG"]
-    };
-    const photoIndex = {1:0,2:0,3:0,4:0};
-    const clickOrder = [4,3,2,1];
-    let orderIdx = 0;
-
-    function swapOne(slot){
-      const tile = document.querySelector(`.photo[data-slot="${slot}"]`);
-      const img  = document.getElementById(`img${slot}`);
-      if(!tile || !img) return;
-
-      const list = photoSets[slot] || [];
-      if(list.length < 2) return;
-
-      photoIndex[slot] = (photoIndex[slot] + 1) % list.length;
-
+    // preload to avoid stutter
+    const pre = new Image();
+    pre.onload = () => {
       tile.classList.add("swap");
-      img.style.filter = "saturate(1.12) contrast(1.05)";
-      img.style.transform = "scale(1.05)";
-
-      const nextSrc = list[photoIndex[slot]];
-      const pre = new Image();
-      pre.onload = () => { img.src = nextSrc; };
-      pre.onerror = () => { img.src = nextSrc; };
-      pre.src = nextSrc;
-
-      setTimeout(() => {
-        tile.classList.remove("swap");
-        img.style.filter = "";
-        img.style.transform = "scale(1.01)";
-      }, 560);
-    }
-
-    function handlePhotoClick(){
-      fireOnce(() => {
-        pop();
-        if(!musicOn) startMusic().catch(()=>{});
-        const slot = clickOrder[orderIdx];
-        orderIdx = (orderIdx + 1) % clickOrder.length;
-        swapOne(slot);
+      // fade out
+      requestAnimationFrame(() => {
+        // when faded, swap and fade in
+        setTimeout(() => {
+          img.src = nextSrc;
+          photoIndex[slot] = nextIndex;
+          img.onload = () => {
+            tile.classList.remove("swap");
+          };
+          // safety fallback
+          setTimeout(()=>tile.classList.remove("swap"), 260);
+        }, 220);
       });
-    }
+    };
+    pre.onerror = () => {
+      img.src = nextSrc;
+      photoIndex[slot] = nextIndex;
+    };
+    pre.src = nextSrc;
+  }
 
-    // --- iPhone/Safari: bind events directly to tiles (pointerdown + touchstart + click) ---
-    function bindPhotoHandlers(){
-      const tiles = document.querySelectorAll(".photo");
-      tiles.forEach(tile => {
-        tile.addEventListener("pointerdown", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handlePhotoClick();
-        }, {passive:false});
+  function advancePhotosOnce(){
+    const slot = clickOrder[orderIdx];
+    orderIdx = (orderIdx + 1) % clickOrder.length;
+    swapOne(slot);
+  }
 
-        tile.addEventListener("touchstart", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handlePhotoClick();
-        }, {passive:false});
+  // ====== NO logic ======
+  const yes = $("yes");
+  const no  = $("no");
+  const result = $("result");
 
-        tile.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handlePhotoClick();
-        }, {passive:false});
-      });
-    }
+  let noClicks = 0;
+  let yesClicks = 0;
 
-    bindPhotoHandlers();
-  </script>
+  function intersects(ax, ay, aw, ah, bx, by, bw, bh){
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  }
+
+  function moveNoAvoidYes(){
+    const pad = 12;
+    const vw = innerWidth;
+    const vh = innerHeight;
+
+    const btn = no.getBoundingClientRect();
+    const yesRect = yes.getBoundingClientRect();
+    const safeGap = 44;
+
+    let x, y, tries = 0;
+    do{
+      x = pad + Math.random() * Math.max(1, vw - btn.width - pad*2);
+      y = pad + Math.random() * Math.max(1, vh - btn.height - pad*2);
+      tries++;
+      if(tries > 220) break;
+    } while(
+      intersects(
+        x, y, btn.width, btn.height,
+        yesRect.left - safeGap, yesRect.top - safeGap,
+        yesRect.width + safeGap*2, yesRect.height + safeGap*2
+      )
+    );
+
+    no.style.left = x + "px";
+    no.style.top  = y + "px";
+    no.style.transform = "translate(0,0)";
+  }
+
+  function setNoLabel(step){
+    const left = NO_TOTAL - step;
+    const phrase = NO_LINES[step-1] || "serio?";
+    no.textContent = `${phrase} 😈 (${left})`;
+  }
+
+  function setYesLabel(){
+    const left = Math.max(0, YES_TOTAL - yesClicks);
+    yes.textContent = `TAK 💖 (${left})`;
+  }
+
+  // start positions
+  moveNoAvoidYes();
+  setYesLabel();
+
+  // anti-double-fire
+  let lastFire = 0;
+  function fireOnce(fn){
+    const now = Date.now();
+    if(now - lastFire < 220) return;
+    lastFire = now;
+    fn();
+  }
+
+  function ensureMusicFromInteraction(){
+    if(!musicOn) startMusic().catch(()=>{});
+  }
+
+  function onNoClicked(e){
+    fireOnce(() => {
+      const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
+      const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
+      sparkleAt(x, y);
+      pop();
+      ensureMusicFromInteraction();
+
+      // ✅ ZDJĘCIA zmieniają się tylko po klikach NIE/TAK
+      advancePhotosOnce();
+
+      noClicks++;
+      if(noClicks < NO_TOTAL){
+        setNoLabel(noClicks);
+        moveNoAvoidYes();
+        result.textContent = "";
+      }else{
+        no.style.display = "none";
+        openMessageApp("NIE 😈");
+      }
+    });
+  }
+
+  function onYesClicked(e){
+    fireOnce(() => {
+      const x = (e.touches?.[0]?.clientX) ?? e.clientX ?? (innerWidth/2);
+      const y = (e.touches?.[0]?.clientY) ?? e.clientY ?? (innerHeight/2);
+      for(let i=0;i<4;i++){
+        setTimeout(()=>sparkleAt(x + (Math.random()*60-30), y + (Math.random()*40-20)), i*40);
+      }
+      pop();
+      ensureMusicFromInteraction();
+
+      // ✅ ZDJĘCIA tylko po klikach NIE/TAK
+      advancePhotosOnce();
+
+      yesClicks++;
+      setYesLabel();
+
+      if(yesClicks >= YES_TOTAL){
+        openMessageApp("TAK 💖");
+      }
+    });
+  }
+
+  // bind events (iPhone safe)
+  no.addEventListener("pointerdown", (e)=>{ e.preventDefault(); e.stopPropagation(); onNoClicked(e); }, {passive:false});
+  no.addEventListener("touchend",   (e)=>{ e.preventDefault(); e.stopPropagation(); onNoClicked(e); }, {passive:false});
+  no.addEventListener("click",      (e)=>{ e.preventDefault(); e.stopPropagation(); onNoClicked(e); });
+
+  yes.addEventListener("pointerdown",(e)=>{ e.preventDefault(); e.stopPropagation(); onYesClicked(e); }, {passive:false});
+  yes.addEventListener("click",     (e)=>{ e.preventDefault(); e.stopPropagation(); onYesClicked(e); });
+
+  addEventListener("resize", () => setTimeout(moveNoAvoidYes, 120));
+  addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 250));
+</script>
 </body>
 </html>
