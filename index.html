@@ -6,16 +6,12 @@
   <title>Czy zostaniesz moją Walentynką? 💘</title>
 
   <style>
-    :root{
-      --shadow: 0 18px 55px rgba(0,0,0,.18);
-      --radius: 22px;
-    }
-
+    :root{ --shadow: 0 18px 55px rgba(0,0,0,.18); --radius: 22px; }
     *{ box-sizing:border-box; }
 
     body{
       margin:0;
-      min-height:100svh;                 /* iOS Safari friendly */
+      min-height:100svh;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -30,58 +26,45 @@
       overflow:hidden;
     }
 
-    /* --- floating hearts --- */
+    /* floating hearts */
     .hearts{
-      position:fixed;
-      inset:0;
+      position:fixed; inset:0;
       pointer-events:none;
       opacity:.55;
-      filter: blur(.2px);
-      z-index: 0;
+      z-index:0;
     }
     .hearts span{
       position:absolute;
-      font-size: 18px;
       transform: translateY(110svh);
       animation: floatUp linear infinite;
       will-change: transform, opacity;
     }
     @keyframes floatUp{
-      0%   { transform: translateY(110svh) translateX(0) rotate(0deg); opacity:0; }
-      10%  { opacity:1; }
-      90%  { opacity:1; }
-      100% { transform: translateY(-20svh) translateX(80px) rotate(360deg); opacity:0; }
+      0%{ transform: translateY(110svh) translateX(0) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      90%{ opacity:1; }
+      100%{ transform: translateY(-20svh) translateX(80px) rotate(360deg); opacity:0; }
     }
 
     .card{
       width: min(620px, 90vw);
-      background: rgba(255, 210, 225, .88); /* RÓŻOWE tło karty */
+      background: rgba(255, 210, 225, .88);
       border: 1px solid rgba(255,255,255,.55);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
-      padding: clamp(14px, 3.2vw, 22px);  /* trochę mniejsze */
+      padding: clamp(14px, 3.2vw, 22px);
       position:relative;
-      z-index: 1;
+      z-index:1;
     }
 
-    h1{
-      margin: 4px 0 8px;
-      font-size: clamp(22px, 5.6vw, 32px);
-      line-height: 1.15;
-    }
+    h1{ margin: 4px 0 8px; font-size: clamp(22px, 5.6vw, 32px); line-height:1.15; }
+    .sub{ margin: 0 0 12px; font-size: clamp(13px, 3.5vw, 16px); opacity:.9; }
 
-    .sub{
-      margin: 0 0 12px;
-      font-size: clamp(13px, 3.5vw, 16px);
-      opacity: .9;
-    }
-
-    /* photos */
     .photos{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap:10px;
       margin: 12px 0 14px;
     }
     .photos img{
@@ -92,13 +75,11 @@
       box-shadow: 0 10px 20px rgba(0,0,0,.14);
       background: rgba(255,255,255,.25);
     }
-
     @media (max-width: 520px){
       .photos{ grid-template-columns: repeat(2, 1fr); }
       .photos img:nth-child(3){ grid-column: 1 / -1; aspect-ratio: 16/9; }
     }
 
-    /* button area */
     #arena{
       position: relative;
       margin-top: 8px;
@@ -125,13 +106,16 @@
     button:active{ transform: scale(.98); }
 
     #yes{ background:#22c55e; color:white; }
-    /* NO will be moved around the whole screen (fixed) */
-    #no{ background:#ef4444; color:white; }
 
-    .hint{
-      margin-top: 10px;
-      font-size: clamp(12px, 3.2vw, 13.5px);
-      opacity: .85;
+    /* NO lives outside card and runs around */
+    #no{
+      background:#ef4444;
+      color:white;
+      position:fixed;
+      z-index: 9999;
+      left: 70%;
+      top: 60%;
+      transform: translate(-50%, -50%);
     }
 
     #result{
@@ -140,12 +124,8 @@
       font-weight: 900;
       min-height: 26px;
     }
-
-    .tiny{
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: .65;
-    }
+    .hint{ margin-top: 10px; font-size: clamp(12px, 3.2vw, 13.5px); opacity:.85; }
+    .tiny{ margin-top: 8px; font-size: 12px; opacity:.65; }
   </style>
 </head>
 
@@ -156,7 +136,6 @@
     <h1>💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
     <p class="sub">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
 
-    <!-- ZDJĘCIA: wrzuć do repo /images/1.jpg /2.jpg /3.jpg -->
     <div class="photos">
       <img src="images/1.jpg" alt="photo 1">
       <img src="images/2.jpg" alt="photo 2">
@@ -168,25 +147,19 @@
     </div>
 
     <div class="hint">Kliknij „TAK”, żeby odblokować szczęście ✨</div>
-    <div class="tiny">PS. Przycisk „NIE” jest trochę nieśmiały 😅</div>
+    <div class="tiny">PS. „NIE” da się kliknąć… ale dopiero po 6 trafieniach 😅</div>
 
     <div id="result"></div>
   </div>
 
-  <!-- "NIE" is outside the card so it can run around the whole screen -->
   <button id="no">NIE 😈</button>
 
   <script>
-    // =========================
-    // CONFIG: where YOU receive the answer
-    // =========================
-    // Wpisz swój numer: bez plusa, z krajem, np. 48XXXXXXXXX
-    const MY_PHONE = "48XXXXXXXXX"; // <- ZMIEN NA SWOJ
-    const USE_WHATSAPP = true;      // true = WhatsApp, false = SMS
+    // ========= SETTINGS =========
+    const MY_PHONE_E164 = "+48690980775";   // iMessage/SMS
+    const KEY = "valentine_answer_v4";
 
-    // =========================
-    // Hearts animation
-    // =========================
+    // ========= HEARTS =========
     const heartsBox = document.getElementById("hearts");
     const heartChars = ["💗","💖","💘","💕","💞","❤️‍🔥"];
 
@@ -206,28 +179,15 @@
 
       setTimeout(() => s.remove(), (dur + delay) * 1000 + 250);
     }
-
     for(let i=0;i<18;i++) spawnHeart();
     setInterval(spawnHeart, 450);
 
-    // =========================
-    // Elements
-    // =========================
+    // ========= ELEMENTS =========
     const yes = document.getElementById("yes");
     const no  = document.getElementById("no");
     const result = document.getElementById("result");
 
-    // Put NO on top so it is always clickable (but it will run away)
-    no.style.position = "fixed";
-    no.style.zIndex = "9999";
-    no.style.left = "70%";
-    no.style.top = "60%";
-    no.style.transform = "translate(-50%, -50%)";
-
-    // =========================
-    // Save local answer (ONLY on her phone)
-    // =========================
-    const KEY = "valentine_answer_v3";
+    // ========= STORAGE =========
     function setLocalAnswer(ans){
       localStorage.setItem(KEY, JSON.stringify({ answer: ans, time: new Date().toISOString() }));
     }
@@ -239,51 +199,38 @@
       result.textContent = `Zapisane na tym telefonie: ${saved.answer} ✅`;
     }
 
-    // =========================
-    // Send answer to YOU (WhatsApp/SMS)
-    // =========================
-    function sendToYou(ans){
+    // ========= SMS / iMessage =========
+    function openMessageApp(ans){
       const stamp = new Date().toLocaleString("pl-PL");
       const text = `Odpowiedź: ${ans} 💘 (czas: ${stamp})`;
-
-      if(!MY_PHONE || MY_PHONE.includes("X")) return;
-
-      if(USE_WHATSAPP){
-        const url = "https://wa.me/" + MY_PHONE + "?text=" + encodeURIComponent(text);
-        window.open(url, "_blank");
-      }else{
-        const url = "sms:+" + MY_PHONE + "&body=" + encodeURIComponent(text);
-        window.location.href = url;
-      }
+      // iOS: sms:+48...&body=...
+      window.location.href = `sms:${MY_PHONE_E164}&body=${encodeURIComponent(text)}`;
     }
 
-    // =========================
-    // NO runs around the whole screen but NEVER covers YES
-    // =========================
-    let escapes = 0;
-    const noTexts = ["NIE 😈","Nie da się 😏","Oj prawie! 😅","Zła odpowiedź 😌","Kliknij TAK 😇","Gonisz mnie 😂"];
+    // ========= NO RUNS, BUT CAN BE CLICKED 6 TIMES =========
+    let noClicks = 0;
+    const needed = 6;
 
     function intersects(ax, ay, aw, ah, bx, by, bw, bh){
       return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
     }
 
-    function moveNo(){
+    function moveNoAvoidYes(){
       const pad = 10;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
 
       const btn = no.getBoundingClientRect();
       const yesRect = yes.getBoundingClientRect();
-      const safe = 26; // keep distance from YES
+      const safe = 30;
 
       let x, y, tries = 0;
-
-      do {
-        x = pad + Math.random() * Math.max(1, (vw - btn.width  - pad*2));
-        y = pad + Math.random() * Math.max(1, (vh - btn.height - pad*2));
+      do{
+        x = pad + Math.random() * Math.max(1, vw - btn.width - pad*2);
+        y = pad + Math.random() * Math.max(1, vh - btn.height - pad*2);
         tries++;
-        if (tries > 80) break;
-      } while (
+        if(tries > 90) break;
+      } while(
         intersects(
           x, y, btn.width, btn.height,
           yesRect.left - safe, yesRect.top - safe,
@@ -294,25 +241,43 @@
       no.style.left = x + "px";
       no.style.top  = y + "px";
       no.style.transform = "translate(0,0)";
-
-      escapes++;
-      no.textContent = noTexts[escapes % noTexts.length];
     }
 
-    // Escape triggers (mouse + touch)
-    no.addEventListener("mouseenter", moveNo);
-    no.addEventListener("touchstart", (e)=>{ e.preventDefault(); moveNo(); }, {passive:false});
-    no.addEventListener("click", (e)=>{ e.preventDefault(); moveNo(); });
+    // Ucieka przy najechaniu / dotknięciu
+    no.addEventListener("mouseenter", moveNoAvoidYes);
+    no.addEventListener("touchstart", (e)=>{ e.preventDefault(); moveNoAvoidYes(); }, {passive:false});
 
-    // =========================
-    // YES logic
-    // =========================
+    // Kliknięcia liczymy — po 6 zapisuje odpowiedź i znika
+    no.addEventListener("click", (e) => {
+      e.preventDefault();
+      noClicks++;
+
+      const left = needed - noClicks;
+      if(left > 0){
+        no.textContent = `NIE 😈 (${left})`;
+        moveNoAvoidYes();
+        // małe info na karcie
+        result.textContent = `Prawie! Zostało złapać "NIE" jeszcze ${left} razy 😅`;
+      } else {
+        const ans = "NIE 😈";
+        setLocalAnswer(ans);
+        result.textContent = `Zapisane: ${ans} ✅`;
+        no.style.display = "none"; // znika dopiero po 6 kliknięciach
+        // opcjonalnie: też otwórz wiadomość do Ciebie:
+        openMessageApp(ans);
+      }
+    });
+
+    // ========= YES =========
     yes.addEventListener("click", () => {
       const ans = "TAK 💖";
       setLocalAnswer(ans);
       result.textContent = "YAY! 💘 Widzimy się na Walentynki 😄";
-      sendToYou(ans);
+      openMessageApp(ans);
     });
+
+    // Start: przenieś NO w losowe miejsce od razu
+    moveNoAvoidYes();
   </script>
 </body>
 </html>
