@@ -88,42 +88,41 @@
       to{ transform: translate(70px, 40px) scale(1.10); }
     }
 
-    /* KARTA: prawie przezroczysta (bez białego tła) */
+    /* KARTA: całkowicie przezroczysta (zero tła) */
     .card{
       width: min(720px, 92vw);
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      background: transparent;
+      border: none;
+      box-shadow: none;
       padding: clamp(14px, 3.2vw, 22px);
       position:relative;
       z-index:1;
-      overflow:hidden;
     }
 
-    /* lekki różowy glow pod treścią */
-    .card:before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(900px 360px at 50% 0%, rgba(255,255,255,.20), transparent 60%),
-        radial-gradient(900px 420px at 50% 100%, rgba(255,255,255,.12), transparent 60%);
-      opacity:.9;
-      pointer-events:none;
-      border-radius: inherit;
-    }
-
-    /* “paski” pod tekstem żeby się nie zlewał */
-    .textWrap{
+    /* tło za napisami: lekko zmatowione (frosted) */
+    .frost{
       position:relative;
       z-index:1;
-      padding: 10px 12px 10px;
+      padding: 12px 14px;
       border-radius: 18px;
       background: rgba(255,255,255,.14);
       border: 1px solid rgba(255,255,255,.22);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       box-shadow: var(--soft);
+    }
+
+    /* pytanie też “pływa” */
+    .floatWrap{
+      display:inline-block;
+      animation: titleDrift 6.6s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes titleDrift{
+      0%   { transform: translateX(0) translateY(0) rotate(-0.10deg); }
+      25%  { transform: translateX(5px) translateY(-3px) rotate(0.10deg); }
+      50%  { transform: translateX(0) translateY(-6px) rotate(-0.08deg); }
+      75%  { transform: translateX(-5px) translateY(-3px) rotate(0.08deg); }
+      100% { transform: translateX(0) translateY(0) rotate(-0.10deg); }
     }
 
     h1{
@@ -313,7 +312,7 @@
   <div class="hearts" id="hearts"></div>
 
   <div class="card">
-    <div class="textWrap">
+    <div class="frost floatWrap">
       <h1 id="title">💘 Czy zostaniesz moją Walentynką Wiktoria? 💘</h1>
       <p class="sub" id="subtitle">Obiecuję: uśmiech, coś pysznego i dużo czułości (w pakiecie) 🥰</p>
     </div>
@@ -346,7 +345,6 @@
 
   <!-- muzyka w tle -->
   <audio id="bgm" preload="auto" loop playsinline>
-    <!-- Jeśli zmienisz nazwę pliku, zmień też AUDIO_SRC w JS -->
     <source src="MORAD%20-%20LAMINE.mp3" type="audio/mpeg">
   </audio>
 
@@ -355,9 +353,23 @@
   <script>
     // ========= SETTINGS =========
     const MY_PHONE_E164 = "+48690980775";
-    const KEY = "valentine_answer_v10";
-    const needed = 5;
-    const AUDIO_SRC = "MORAD%20-%20LAMINE.mp3"; // jeśli zmienisz nazwę, zmień tu
+    const KEY = "valentine_answer_v11";
+    const needed = 10;
+    const AUDIO_SRC = "MORAD%20-%20LAMINE.mp3";
+
+    // Teksty po kliknięciach "NIE" (1..10)
+    const NO_LINES = [
+      "na pewno?",
+      "Może jednak?",
+      "Jeden wieczór?",
+      "Ej…..",
+      "poważnie?",
+      "kocham cię.",
+      "Dobra, mam plan: Ty mówisz TAK, ja udaję, że to było Twoje 😂",
+      "To ja już zamawiam pizzę… nie zmuszaj mnie do odwołania 😭",
+      "Ostatnia prośba: chociaż uśmiech? 🥺",
+      "No to kliknęło się… a teraz i tak Cię lubię 😈"
+    ];
 
     // ========= UTIL =========
     const $ = (id) => document.getElementById(id);
@@ -408,7 +420,6 @@
     const musicBtn = $("musicBtn");
     let musicOn = false;
 
-    // upewnij się, że source jest ustawiony (na wypadek zmian)
     (function initBgm(){
       try{
         const source = bgm.querySelector("source");
@@ -419,31 +430,26 @@
 
     async function startMusic(){
       try{
-        ensureAudio(); // odblokuj audio na iOS
+        ensureAudio();
         bgm.muted = false;
         bgm.volume = 0.35;
         await bgm.play();
         musicOn = true;
         musicBtn.textContent = "🔇 Muzyka";
       }catch(e){
-        // autoplay może zostać zablokowane — wtedy tylko przycisk
         musicOn = false;
         musicBtn.textContent = "🔊 Muzyka";
       }
     }
-
     function stopMusic(){
       try{ bgm.pause(); }catch(e){}
       musicOn = false;
       musicBtn.textContent = "🔊 Muzyka";
     }
-
     musicBtn.addEventListener("click", () => {
       if(musicOn) stopMusic();
       else startMusic();
     });
-
-    // spróbuj odpalić muzykę automatycznie (czasem działa na Android/desktop)
     setTimeout(() => startMusic(), 300);
 
     // ========= HEARTS =========
@@ -503,9 +509,8 @@
       setTimeout(() => { window.location.href = url; }, 60);
     }
 
-    // ========= NO: ucieka dopiero po kliknięciu =========
+    // ========= NO: ucieka dopiero po kliknięciu (10 razy) =========
     let noClicks = 0;
-    no.textContent = "NIE 😈";
 
     function intersects(ax, ay, aw, ah, bx, by, bw, bh){
       return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
@@ -521,13 +526,12 @@
         bottom: window.innerHeight - padBot - safe
       };
     }
-
     function moveNoAvoidYes(){
       const bounds = getSafeBounds();
       const btn = no.getBoundingClientRect();
       const yesRect = yes.getBoundingClientRect();
 
-      const safeGap = 36;
+      const safeGap = 42;
       const maxX = Math.max(1, bounds.right - bounds.left - btn.width);
       const maxY = Math.max(1, bounds.bottom - bounds.top - btn.height);
 
@@ -536,7 +540,7 @@
         x = bounds.left + Math.random() * maxX;
         y = bounds.top + Math.random() * maxY;
         tries++;
-        if(tries > 160) break;
+        if(tries > 200) break;
       } while(
         intersects(
           x, y, btn.width, btn.height,
@@ -550,21 +554,39 @@
       no.style.transform = "translate(0,0)";
     }
 
+    // startowa pozycja
+    moveNoAvoidYes();
+
+    function setNoText(step, left){
+      // step: 1..needed
+      const phrase = NO_LINES[step-1] || "NIE";
+      // na starcie ma być "NIE 😈", potem zmienia się na frazy
+      if(step === 0){
+        no.textContent = "NIE 😈";
+      } else {
+        no.textContent = `${phrase} 😈 (${left})`;
+      }
+    }
+
+    // initial label
+    setNoText(0, needed);
+
     no.addEventListener("click", async (e) => {
       e.preventDefault();
       ensureAudio();
       popUpUp();
-      // na iPhone autoplay często blokuje — klik odblokowuje
       if(!musicOn) { try { await startMusic(); } catch(_){} }
 
       noClicks++;
       const left = needed - noClicks;
 
-      if(left > 0){
-        no.textContent = `NIE 😈 (${left})`;
+      if(noClicks < needed){
+        // zmieniamy tekst i uciekamy
+        setNoText(noClicks, left);
         moveNoAvoidYes();
         result.textContent = "";
       } else {
+        // ostatni klik: zapis + SMS "NIE"
         const ans = "NIE 😈";
         setLocalAnswer(ans);
         no.style.display = "none";
@@ -604,8 +626,6 @@
     });
     closeOverlay.addEventListener("click", () => overlay.classList.remove("on"));
 
-    // Start
-    moveNoAvoidYes();
     window.addEventListener("orientationchange", () => setTimeout(moveNoAvoidYes, 300));
   </script>
 </body>
